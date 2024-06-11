@@ -2,6 +2,7 @@ package br.com.systems.fenix.API_Fenix.Model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 @Entity
@@ -17,13 +18,16 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotEmpty
+    @Column(name = "promotionName", length = 255, nullable = false)
     private String promotionName;
 
-    @Column(nullable = false)
+    @NotEmpty
+    @Column(name = "description", length = 255, nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @NotEmpty
+    @Column(name = "prize", length = 255, nullable = false)
     private Integer prize;
 
     @ManyToOne(fetch = FetchType.LAZY)
