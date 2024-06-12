@@ -1,12 +1,10 @@
 package br.com.systems.fenix.API_Fenix.Service;
 
-import br.com.systems.fenix.API_Fenix.Model.Client;
 import br.com.systems.fenix.API_Fenix.Model.Promotion;
 import br.com.systems.fenix.API_Fenix.Repository.PromotionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,9 +65,9 @@ public class PromotionService {
     }
 
     @Transactional
-    public void delete(Promotion promotion) {
+    public void delete(Long id) {
         try {
-            this.promotionRepository.deleteById(promotion.getId());
+            this.promotionRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete product: " + e.getMessage());
         }

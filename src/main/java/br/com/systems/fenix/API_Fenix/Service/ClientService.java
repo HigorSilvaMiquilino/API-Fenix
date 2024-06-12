@@ -68,17 +68,17 @@ public class ClientService {
                 return Optional.empty();
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to update product: " + e.getMessage());
+            throw new RuntimeException("Failed to update client: " + e.getMessage());
         }
     }
 
 
     @Transactional
-    public void delete(Client client) {
+    public void delete(Long id) {
         try {
-            clientRepository.deleteById(client.getId());
+            clientRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to delete product: " + e.getMessage());
+            throw new RuntimeException("Failed to delete client: " + e.getMessage());
         }
     }
 }
