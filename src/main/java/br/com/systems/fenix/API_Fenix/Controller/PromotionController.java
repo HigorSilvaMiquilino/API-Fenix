@@ -1,9 +1,9 @@
 package br.com.systems.fenix.API_Fenix.Controller;
 
-
 import br.com.systems.fenix.API_Fenix.Model.Promotion;
 import br.com.systems.fenix.API_Fenix.Service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ public class PromotionController {
         return ResponseEntity.ok(promotion);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("name/{name}")
     public ResponseEntity<Promotion> findByName(@PathVariable String name) {
         Promotion byPromotionName = this.promotionService.findByPromotionName(name);
         return ResponseEntity.ok(byPromotionName);
@@ -40,11 +40,18 @@ public class PromotionController {
 
     @PostMapping
     @Validated
-    public ResponseEntity<Void> create(@PathVariable Promotion promotion) {
+    public ResponseEntity<Void> create(@RequestBody Promotion promotion) {
         this.promotionService.save(promotion);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(promotion.getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @PostMapping("/all")
+    @Validated
+    public ResponseEntity<Void> createAll(@RequestBody List<Promotion> promotions){
+        this.promotionService.save(promotions);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")

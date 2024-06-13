@@ -44,6 +44,19 @@ public class PromotionService {
         return promotionBuilt;
     }
 
+    @Transactional
+    public void save(List<Promotion> promotions){
+        for (Promotion promotion: promotions ){
+            Promotion promotionBuilt = Promotion.builder()
+                    .promotionName(promotion.getPromotionName())
+                    .description(promotion.getDescription())
+                    .prize(promotion.getPrize())
+                    .client(promotion.getClient())
+                    .build();
+            this.promotionRepository.save(promotionBuilt);
+        }
+    }
+
 
     @Transactional
     public Optional<Promotion> update(Promotion promotion) {
@@ -54,6 +67,7 @@ public class PromotionService {
                 existingPromotion.setPromotionName(promotion.getPromotionName());
                 existingPromotion.setDescription(promotion.getDescription());
                 existingPromotion.setPrize(promotion.getPrize());
+                existingPromotion.setClient(promotion.getClient());
                 Promotion promotionUpdated = promotionRepository.save(existingPromotion);
                 return Optional.of(promotionUpdated);
             } else {

@@ -4,6 +4,7 @@ package br.com.systems.fenix.API_Fenix.Controller;
 import br.com.systems.fenix.API_Fenix.Model.Client;
 import br.com.systems.fenix.API_Fenix.Service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<Client> findByFirstName(@PathVariable String name) {
         Client client = clientService.findByName(name);
         return ResponseEntity.ok(client);
@@ -44,6 +45,12 @@ public class ClientController {
         this.clientService.save(client);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(client.getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+    @PostMapping("/all")
+    @Validated
+    public ResponseEntity<Void> createAll(@RequestBody List<Client> clients){
+        this.clientService.save(clients);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")

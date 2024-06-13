@@ -49,6 +49,22 @@ public class ClientService {
         return clientBuilt;
     }
 
+    @Transactional
+    public void save(List<Client> clients){
+        for (Client client: clients){
+          Client  ClientsBuilt = Client.builder()
+                    .firstName(client.getFirstName())
+                    .lastName(client.getLastName())
+                    .age(client.getAge())
+                    .telephone(client.getTelephone())
+                    .email(client.getEmail())
+                    .password(client.getPassword())
+                    .promotions(client.getPromotions())
+                    .build();
+           this.clientRepository.save(ClientsBuilt);
+        }
+    }
+
 
     @Transactional
     public Optional<Client> update(Client client) {
