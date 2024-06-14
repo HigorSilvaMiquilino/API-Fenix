@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Promotion")
 @Getter
@@ -33,4 +35,9 @@ public class Promotion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
+
+    @OneToMany(mappedBy = "promotion",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products;
+
+
 }
