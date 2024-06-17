@@ -32,7 +32,7 @@ public class PromotionController {
         return ResponseEntity.ok(byPromotionName);
     }
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public ResponseEntity<List<Promotion>> find() {
         List<Promotion> allPromotions = this.promotionService.findAllPromotions();
         return ResponseEntity.ok(allPromotions);
@@ -49,7 +49,7 @@ public class PromotionController {
 
     @PostMapping("/all")
     @Validated
-    public ResponseEntity<Void> createAll(@RequestBody List<Promotion> promotions){
+    public ResponseEntity<Void> createAll(@RequestBody List<Promotion> promotions) {
         this.promotionService.save(promotions);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

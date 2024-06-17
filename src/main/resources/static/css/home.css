@@ -1,0 +1,72 @@
+.container {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  text-align: center;
+}
+
+.title {
+  color: grey;
+  font-size: 18px;
+}
+
+button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+button:hover, a:hover {
+  opacity: 0.7;
+}
+
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.cardArry {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: calc(50% - 20px);
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cardArry img {
+  width: 200px;
+  border-radius: 8px;
+}
+
+.cardArry h2 {
+  font-size: 1.5em;
+  margin: 10px 0;
+}
+
+.cardArry p {
+  color: grey;
+}

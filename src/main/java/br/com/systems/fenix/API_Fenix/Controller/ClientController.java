@@ -1,6 +1,5 @@
 package br.com.systems.fenix.API_Fenix.Controller;
 
-
 import br.com.systems.fenix.API_Fenix.Model.Client;
 import br.com.systems.fenix.API_Fenix.Service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public ResponseEntity<List<Client>> findAll() {
         List<Client> allClients = clientService.findAllClients();
         return ResponseEntity.ok(allClients);
@@ -46,9 +45,10 @@ public class ClientController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(client.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
+
     @PostMapping("/all")
     @Validated
-    public ResponseEntity<Void> createAll(@RequestBody List<Client> clients){
+    public ResponseEntity<Void> createAll(@RequestBody List<Client> clients) {
         this.clientService.save(clients);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

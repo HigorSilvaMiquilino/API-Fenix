@@ -21,49 +21,49 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id){
+    public ResponseEntity<Product> findById(@PathVariable Long id) {
         Product product = this.productService.findById(id);
         return ResponseEntity.ok(product);
     }
 
     @GetMapping("name/{name}")
-    public ResponseEntity<Product> findByName(@PathVariable String name){
+    public ResponseEntity<Product> findByName(@PathVariable String name) {
         Product byProductName = this.productService.findByName(name);
         return ResponseEntity.ok(byProductName);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<Product>> findAll(){
+    @GetMapping("/all")
+    public ResponseEntity<List<Product>> findAll() {
         List<Product> allProducts = this.productService.findAllProducts();
         return ResponseEntity.ok(allProducts);
     }
 
     @PostMapping
     @Validated
-    public ResponseEntity<Void> create(@RequestBody Product product){
+    public ResponseEntity<Void> create(@RequestBody Product product) {
         this.productService.save(product);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(product.getId()).toUri();
-        return  ResponseEntity.created(uri).build();
+        return ResponseEntity.created(uri).build();
     }
 
     @PostMapping("/all")
     @Validated
-    public ResponseEntity<Void> createAll(@RequestBody List<Product> products){
+    public ResponseEntity<Void> createAll(@RequestBody List<Product> products) {
         this.productService.save(products);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
     @Validated
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody Product product){
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody Product product) {
         product.setId(id);
         this.productService.update(product);
         return ResponseEntity.ok("Product updated successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id){
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         this.productService.delete(id);
         return ResponseEntity.ok("Product deleted successfully");
     }

@@ -1,6 +1,5 @@
 package br.com.systems.fenix.API_Fenix.Model;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -32,12 +31,14 @@ public class Promotion {
     @Column(name = "prize", length = 255, nullable = false)
     private Integer prize;
 
+    @Column(name = "imageUrl")
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "promotion",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "promotion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
-
 
 }

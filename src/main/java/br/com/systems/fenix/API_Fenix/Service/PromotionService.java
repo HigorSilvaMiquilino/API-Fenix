@@ -20,8 +20,7 @@ public class PromotionService {
         Optional<Promotion> promotion = this.promotionRepository.findById(id);
         return promotion
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Failed to fetch product by ID: " + id
-                ));
+                        "Failed to fetch product by ID: " + id));
     }
 
     public Promotion findByPromotionName(String name) {
@@ -38,6 +37,7 @@ public class PromotionService {
                 .promotionName(promotion.getPromotionName())
                 .description(promotion.getDescription())
                 .prize(promotion.getPrize())
+                .imageUrl(promotion.getImageUrl())
                 .client(promotion.getClient())
                 .build();
         this.promotionRepository.save(promotionBuilt);
@@ -45,18 +45,18 @@ public class PromotionService {
     }
 
     @Transactional
-    public void save(List<Promotion> promotions){
-        for (Promotion promotion: promotions ){
+    public void save(List<Promotion> promotions) {
+        for (Promotion promotion : promotions) {
             Promotion promotionBuilt = Promotion.builder()
                     .promotionName(promotion.getPromotionName())
                     .description(promotion.getDescription())
                     .prize(promotion.getPrize())
+                    .imageUrl(promotion.getImageUrl())
                     .client(promotion.getClient())
                     .build();
             this.promotionRepository.save(promotionBuilt);
         }
     }
-
 
     @Transactional
     public Optional<Promotion> update(Promotion promotion) {
@@ -67,6 +67,7 @@ public class PromotionService {
                 existingPromotion.setPromotionName(promotion.getPromotionName());
                 existingPromotion.setDescription(promotion.getDescription());
                 existingPromotion.setPrize(promotion.getPrize());
+                existingPromotion.setImageUrl(promotion.getImageUrl());
                 existingPromotion.setClient(promotion.getClient());
                 Promotion promotionUpdated = promotionRepository.save(existingPromotion);
                 return Optional.of(promotionUpdated);
