@@ -48,6 +48,9 @@ public class Client {
     @Column(name = "password", length = 20, nullable = false)
     private String password;
 
+    @Column(name = "imageUrl", length = 255)
+    private String imageUrl;
+
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Promotion> promotions;
 

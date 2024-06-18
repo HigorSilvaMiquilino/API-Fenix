@@ -32,6 +32,12 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Client> findByEmail(@PathVariable String email) {
+        Client client = clientService.findByEmail(email);
+        return ResponseEntity.ok(client);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Client>> findAll() {
         List<Client> allClients = clientService.findAllClients();
@@ -66,5 +72,4 @@ public class ClientController {
         this.clientService.delete(id);
         return ResponseEntity.ok("Client deleted successfully");
     }
-
 }

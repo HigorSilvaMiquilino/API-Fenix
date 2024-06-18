@@ -16,23 +16,24 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-
     public Client findById(Long id) {
         Optional<Client> client = this.clientRepository.findById(id);
         return client
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "User not found with " + id)
-                );
+                        "User not found with " + id));
     }
 
     public Client findByName(String name) {
         return this.clientRepository.findByFirstName(name);
     }
 
+    public Client findByEmail(String email) {
+        return this.clientRepository.findByEmail(email);
+    }
+
     public List<Client> findAllClients() {
         return clientRepository.findAll();
     }
-
 
     @Transactional
     public Client save(Client client) {
@@ -43,6 +44,7 @@ public class ClientService {
                 .telephone(client.getTelephone())
                 .email(client.getEmail())
                 .password(client.getPassword())
+                .imageUrl(client.getImageUrl())
                 .promotions(client.getPromotions())
                 .build();
         this.clientRepository.save(client);
@@ -50,21 +52,21 @@ public class ClientService {
     }
 
     @Transactional
-    public void save(List<Client> clients){
-        for (Client client: clients){
-          Client  ClientsBuilt = Client.builder()
+    public void save(List<Client> clients) {
+        for (Client client : clients) {
+            Client ClientsBuilt = Client.builder()
                     .firstName(client.getFirstName())
                     .lastName(client.getLastName())
                     .age(client.getAge())
                     .telephone(client.getTelephone())
                     .email(client.getEmail())
                     .password(client.getPassword())
+                    .imageUrl(client.getImageUrl())
                     .promotions(client.getPromotions())
                     .build();
-           this.clientRepository.save(ClientsBuilt);
+            this.clientRepository.save(ClientsBuilt);
         }
     }
-
 
     @Transactional
     public Optional<Client> update(Client client) {
@@ -78,6 +80,7 @@ public class ClientService {
                 existingClient.setTelephone(client.getTelephone());
                 existingClient.setEmail(client.getEmail());
                 existingClient.setPassword(client.getPassword());
+                existingClient.setEmail(client.getEmail());
                 Client clientUpdated = clientRepository.save(existingClient);
                 return Optional.of(clientUpdated);
             } else {
@@ -88,7 +91,6 @@ public class ClientService {
         }
     }
 
-
     @Transactional
     public void delete(Long id) {
         try {
@@ -96,5 +98,10 @@ public class ClientService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete client: " + e.getMessage());
         }
+    }
+
+    public boolean validateClient(String email, String password) {
+        Client client = clientRepository.findByEmail(email);
+        return client != null && client.getPassword().equals(password);
     }
 }

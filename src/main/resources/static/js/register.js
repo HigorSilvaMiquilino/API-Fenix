@@ -12,7 +12,7 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
   };
 
   fetch("http://localhost:8080/client", {
-    method: "Post",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
