@@ -32,10 +32,12 @@ public class LoginController {
     Map<String, Object> response = new HashMap<>();
     if (isValid) {
       response.put("success", true);
+      response.put("emailClient", email);
       return ResponseEntity.ok(response);
     } else {
       response.put("success", false);
       response.put("message", "Invalid email or password");
+
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 

@@ -44,7 +44,6 @@ public class ClientService {
                 .telephone(client.getTelephone())
                 .email(client.getEmail())
                 .password(client.getPassword())
-                .imageUrl(client.getImageUrl())
                 .promotions(client.getPromotions())
                 .build();
         this.clientRepository.save(client);
@@ -61,7 +60,6 @@ public class ClientService {
                     .telephone(client.getTelephone())
                     .email(client.getEmail())
                     .password(client.getPassword())
-                    .imageUrl(client.getImageUrl())
                     .promotions(client.getPromotions())
                     .build();
             this.clientRepository.save(ClientsBuilt);
@@ -80,7 +78,6 @@ public class ClientService {
                 existingClient.setTelephone(client.getTelephone());
                 existingClient.setEmail(client.getEmail());
                 existingClient.setPassword(client.getPassword());
-                existingClient.setEmail(client.getEmail());
                 Client clientUpdated = clientRepository.save(existingClient);
                 return Optional.of(clientUpdated);
             } else {

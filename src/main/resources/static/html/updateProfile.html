@@ -3,7 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/src/main/resources/static/css/update.css" />
+    <script src="/src/main/resources/static/js/update.js" defer></script>
     <title>Update Profile</title>
   </head>
-  <body></body>
+  <body>
+    <div class="form-container">
+      <form id="apiFormUpdate">
+        <div class="input-group">
+          <h1>Update Profile</h1>
+
+          <label for="firstName">First Name:</label>
+          <input type="text" id="firstName" name="firstName" />
+
+          <label for="lastName">Last Name:</label>
+          <input type="text" id="lastName" name="lastName" />
+
+          <label for="age">Age:</label>
+          <input type="number" id="age" name="age" />
+
+          <label for="telephone">Telephone:</label>
+          <input type="tel" id="telephone" name="telephone" />
+
+          <label for="email">E-mail:</label>
+          <input type="email" id="email" name="email" />
+
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" />
+        </div>
+
+        <div class="button-group">
+          <button type="submit">Update</button>
+        </div>
+
+        <div class="home-link">
+          <a href="home.html" style="text-decoration: none">Home</a>
+        </div>
+      </form>
+    </div>
+    <div id="response"></div>
+  </body>
 </html>

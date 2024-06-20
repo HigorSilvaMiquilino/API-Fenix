@@ -1,10 +1,12 @@
 package br.com.systems.fenix.API_Fenix.Config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -18,10 +20,9 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedMethods("GET", "POST", "PUT", "DELETE");
   }
 
-  @Override
-  public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/html/**")
-        .addResourceLocations("classpath:/static/html/");
+  @Bean
+  public MultipartResolver multipartResolver() {
+    return new StandardServletMultipartResolver();
   }
 
 }

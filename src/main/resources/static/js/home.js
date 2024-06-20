@@ -1,19 +1,23 @@
+let idClient;
+
 document.addEventListener("DOMContentLoaded", () => {
   const email = localStorage.getItem("userEmail");
+  const firstName = localStorage.getItem("userFirstName");
+  const lastName = localStorage.getItem("userLastName");
 
   if (email) {
     fetch(`http://localhost:8080/client/email/${email}`)
       .then((response) => response.json())
       .then((data) => {
         const container = document.getElementById("cardProfile");
+        idClient = data.id;
 
         container.innerHTML = "";
 
         const cardProfile = document.createElement("div");
         cardProfile.className = "card";
         cardProfile.innerHTML = `
-        <img src="${data.imageUrl}" alt="${data.firstName}"  style="width: 100%">
-        <h1>${data.firstName} ${data.lastName}</h1>
+          <h1>${data.firstName || firstName} ${data.lastName || lastName}</h1>
         <p>Great to see you here</p>
         `;
         container.appendChild(cardProfile);
@@ -62,6 +66,27 @@ function fetchPromotion() {
     .catch((error) => console.error("Error fetching promotions:", error));
 }
 
-function updateProfile() {}
+function updateProfile() {
+  window.location.href =
+    "http://127.0.0.1:5500/src/main/resources/static/html/updateProfile.html";
+}
 
-function deleteAccount() {}
+function deleteAccount() {
+  if (confirm("Are you sure you want to delete this account?")) {
+    fetch(`http://localhost:8080/client/${idClient}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        alert("Account deleted succesfully");
+        window.location.href =
+          "http://127.0.0.1:5500/src/main/resources/static/html/login.html";
+      })
+      .catch((error) => console.error("Error deleting account: " + error));
+  }
+}

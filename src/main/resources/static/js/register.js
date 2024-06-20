@@ -18,9 +18,20 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
     },
     body: JSON.stringify(client),
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
     .then((data) => {
       console.log("Success:", data);
+      alert("Welcome: " + data.client.firstName);
+      localStorage.setItem("userEmail", data.client.email);
+      localStorage.setItem("userFirstName", data.client.firstName);
+      localStorage.setItem("userLastName", data.client.lastName);
+      window.location.href =
+        "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
     })
     .catch((error) => {
       console.error("Error:", error);

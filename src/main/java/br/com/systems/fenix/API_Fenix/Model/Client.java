@@ -41,15 +41,12 @@ public class Client {
     private String telephone;
 
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
-    @Column(name = "email", length = 255, nullable = false)
+    @Column(name = "email", length = 255, nullable = false, unique = true)
     private String email;
 
     @Size(min = 8, message = "Password has to be at least 8 characters long")
-    @Column(name = "password", length = 20, nullable = false)
+    @Column(name = "password", length = 20, nullable = false, unique = true)
     private String password;
-
-    @Column(name = "imageUrl", length = 255)
-    private String imageUrl;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Promotion> promotions;
