@@ -2,8 +2,12 @@ package br.com.systems.fenix.API_Fenix.Service;
 
 import br.com.systems.fenix.API_Fenix.Model.Client;
 import br.com.systems.fenix.API_Fenix.Repository.ClientRepository;
-import jakarta.persistence.EntityNotFoundException;
+import br.com.systems.fenix.API_Fenix.exception.ClientEmailNotFoundException;
+import br.com.systems.fenix.API_Fenix.exception.ClientIdNotFoundException;
+import br.com.systems.fenix.API_Fenix.exception.ClientNameNotFoundException;
+import br.com.systems.fenix.API_Fenix.exception.ClientsNotFoundException;
 import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +23,38 @@ public class ClientService {
     public Client findById(Long id) {
         Optional<Client> client = this.clientRepository.findById(id);
         return client
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "User not found with " + id));
+                .orElseThrow(() -> new ClientIdNotFoundException("Client not found with ", id));
     }
 
+    @SuppressWarnings("null")
     public Client findByName(String name) {
-        return this.clientRepository.findByFirstName(name);
+        Client client = this.clientRepository.findByFirstName(name);
+        if (client == null) {
+            throw new ClientNameNotFoundException("Client name not found: ", name);
+        } else {
+            return this.clientRepository.findByFirstName(name);
+        }
+
     }
 
+    @SuppressWarnings("null")
     public Client findByEmail(String email) {
-        return this.clientRepository.findByEmail(email);
+        Client client = this.clientRepository.findByEmail(email);
+        if (client == null) {
+            throw new ClientEmailNotFoundException("Client email not found: ", email);
+        } else {
+            return this.findByEmail(email);
+        }
     }
 
     public List<Client> findAllClients() {
+        List<Client> clients = this.clientRepository.findAll();
+
+        for (Client client : clients) {
+            if (client == null) {
+                throw new ClientsNotFoundException("There is no one in the database");
+            }
+        }
         return clientRepository.findAll();
     }
 
