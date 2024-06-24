@@ -9,4 +9,5 @@ public class ApiFenixApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ApiFenixApplication.class, args);
 	}
+
 }

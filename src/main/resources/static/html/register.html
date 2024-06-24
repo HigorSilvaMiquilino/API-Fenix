@@ -12,23 +12,29 @@
       <h1>Register</h1>
       <form id="apiForm">
         <div class="input-group">
-          <label for="firstName">First Name:</label>
-          <input type="text" id="firstName" name="firstName" />
+          <label for="firstNameLabel">First Name:</label>
+          <input type="text" id="firstName" name="firstName" placeholder="Enter your first name"/>
+          <span id="firstNameFeedback" style="color: red;"></span>
 
-          <label for="lastName">Last Name:</label>
-          <input type="text" id="lastName" name="lastName" />
+          <label for="lastNameLabel">Last Name:</label>
+          <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" />
+          <span id="lastNameFeedback" style="color: red;"></span>
 
-          <label for="age">Age:</label>
-          <input type="number" id="age" name="age" />
+          <label for="ageLabel">Age:</label>
+          <input type="number" id="age" name="age" placeholder="Enter your age"/>
+          <span id="ageFeedback" style="color: red;"></span>
 
-          <label for="telephone">Telephone:</label>
-          <input type="tel" id="telephone" name="telephone" />
+          <label for="telephoneLabel">Telephone:</label>
+          <input type="tel" id="telephone" name="telephone" placeholder="Enter your telephone" />
+          <span id="telephoneFeedback" style="color: red;"></span>
 
-          <label for="email">E-mail:</label>
-          <input type="email" id="email" name="email" />
+          <label for="emailLabel">E-mail:</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" />
+          <span id="emailFeedback" style="color: red;"></span>
 
-          <label for="password">Password:</label>
+          <label for="passwordLabel">Password:</label>
           <input type="password" id="password" name="password" />
+          <span id="passwordFeedback" style="color: red;"></span>
         </div>
 
         <div class="button-group">
