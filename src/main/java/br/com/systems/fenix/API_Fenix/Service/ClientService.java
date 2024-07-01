@@ -32,7 +32,7 @@ public class ClientService {
         if (client == null) {
             throw new ClientNameNotFoundException("Client name not found: ", name);
         } else {
-            return this.clientRepository.findByFirstName(name);
+            return client;
         }
 
     }
@@ -43,19 +43,16 @@ public class ClientService {
         if (client == null) {
             throw new ClientEmailNotFoundException("Client email not found: ", email);
         } else {
-            return this.findByEmail(email);
+            return client;
         }
     }
 
     public List<Client> findAllClients() {
         List<Client> clients = this.clientRepository.findAll();
-
-        for (Client client : clients) {
-            if (client == null) {
-                throw new ClientsNotFoundException("There is no one in the database");
-            }
+        if (clients.isEmpty()) {
+            throw new ClientsNotFoundException("There is no one in the database");
         }
-        return clientRepository.findAll();
+        return clients;
     }
 
     @Transactional
@@ -69,7 +66,7 @@ public class ClientService {
                 .password(client.getPassword())
                 .promotions(client.getPromotions())
                 .build();
-        this.clientRepository.save(client);
+        this.clientRepository.save(clientBuilt);
         return clientBuilt;
     }
 

@@ -12,66 +12,54 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
     password: formData.get("password"),
   };
 
-  if(validateForm()){
-  fetch("http://localhost:8080/client", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(client),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
+  if (validateForm()) {
+    fetch("http://localhost:8080/client", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(client),
     })
-    .then((data) => {
-      console.log("Success:", data);
-      alert("Welcome: " + data.client.firstName);
-      localStorage.setItem("userEmail", data.client.email);
-      localStorage.setItem("userFirstName", data.client.firstName);
-      localStorage.setItem("userLastName", data.client.lastName);
-      window.location.href =
-        "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Success:", data);
+        alert("Welcome: " + data.client.firstName);
+        localStorage.setItem("userEmail", data.client.email);
+        localStorage.setItem("userFirstName", data.client.firstName);
+        localStorage.setItem("userLastName", data.client.lastName);
+        window.location.href =
+          "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }
 });
 
-function validateForm(){
+const firstNameFeedback = document.getElementById("firstNameFeedback");
+
+const lastNameFeedback = document.getElementById("lastNameFeedback");
+
+const ageFeedback = document.getElementById("ageFeedback");
+
+const telephoneFeedback = document.getElementById("telephoneFeedback");
+
+const emailFeedback = document.getElementById("emailFeedback");
+
+const passwordFeedback = document.getElementById("passwordFeedback");
+
+function validateForm() {
   const firstName = document.getElementById("firstName").value;
   const lastName = document.getElementById("lastName").value;
   const age = document.getElementById("age").value;
   const telephone = document.getElementById("telephone").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
-  const firstNameFeedback = document.getElementById(
-    "firstNameFeedback"
-  );
-
-  const lastNameFeedback = document.getElementById(
-    "lastNameFeedback"
-  );
-
-  const ageFeedback = document.getElementById(
-    "ageFeedback"
-  );
-
-  const telephoneFeedback = document.getElementById(
-    "telephoneFeedback"
-  );
-
-  const emailFeedback = document.getElementById(
-    "emailFeedback"
-  );
-
-  const passwordFeedback = document.getElementById(
-    "passwordFeedback"
-  );
 
   firstNameFeedback.textContent = "";
   lastNameFeedback.textContent = "";
@@ -87,49 +75,99 @@ function validateForm(){
   document.getElementById("email").style.borderColor = "";
   document.getElementById("password").style.borderColor = "";
 
-
-
   let isValid = true;
 
-  if(firstName === "" || /\d/.test(firstName)){
+  if (firstName === "" || /\d/.test(firstName)) {
     firstNameFeedback.textContent = "Please enter your name propely.";
     document.getElementById("firstName").style.borderColor = "red";
     isValid = false;
   }
- 
-  if(lastName === "" || /\d/.test(lastName)){
+
+  if (lastName === "" || /\d/.test(lastName)) {
     lastNameFeedback.textContent = "Please enter your last name propely.";
     document.getElementById("lastName").style.borderColor = "red";
     isValid = false;
   }
 
-  if(!/^\d+$/.test(age) || age <= 13){
-    ageFeedback.textContent = "Please enter your age propely and you have to be at least 13 years old.";
+  if (!/^\d+$/.test(age) || age <= 13) {
+    ageFeedback.textContent =
+      "Please enter your age propely and you have to be at least 13 years old.";
     document.getElementById("age").style.borderColor = "red";
     isValid = false;
   }
 
-  const telephoneRegex = /^\s*(\d{2}|\d{0})[-. ]?(\d{5}|\d{4})[-. ]?(\d{4})[-. ]?\s*$/;
-  if(!telephoneRegex.test(telephone)){
-    telephoneFeedback.textContent = "Please enter your telephone number propely.";
+  const telephoneRegex = /^\s*\(?\d{2}\)?[-. ]?\d{4,5}[-. ]?\d{4}\s*$/;
+  if (!telephoneRegex.test(telephone)) {
+    telephoneFeedback.textContent =
+      "Please enter your telephone number propely.";
     document.getElementById("telephone").style.borderColor = "red";
     isValid = false;
   }
 
   const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  if(!emailRegex.test(email)){
+  if (!emailRegex.test(email)) {
     emailFeedback.textContent = "Please enter your e-mail propely.";
     document.getElementById("email").style.borderColor = "red";
     isValid = false;
   }
 
-
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; 
-  if(!passwordRegex.test(password)){
-    password.textContent = "Please enter your password propely, it has to be at least 8 characters length.";
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    passwordFeedback.textContent =
+      "Please enter your password propely, it has to be at least 8 characters length.";
     document.getElementById("password").style.borderColor = "red";
     isValid = false;
   }
 
   return isValid;
-} 
+}
+
+document
+  .getElementById("firstName")
+  .addEventListener("input", function (event) {
+    event.target.style.borderColor = "";
+    firstNameFeedback.textContent = "";
+  });
+
+document.getElementById("lastName").addEventListener("input", function (event) {
+  event.target.style.borderColor = "";
+  lastNameFeedback.textContent = "";
+});
+
+document.getElementById("age").addEventListener("input", function (event) {
+  event.target.style.borderColor = "";
+  ageFeedback.textContent = "";
+});
+
+document
+  .getElementById("telephone")
+  .addEventListener("input", function (event) {
+    event.target.style.borderColor = "";
+    telephoneFeedback.textContent = "";
+    phoneMaskBrazil(event);
+  });
+
+function phoneMaskBrazil(event) {
+  var key = event.key;
+  var element = event.target;
+  var isAllowed = /\d|Backspace|Tab/;
+  if (!isAllowed.test(key)) event.preventDefault();
+
+  var inputValue = element.value;
+  inputValue = inputValue.replace(/\D/g, "");
+  inputValue = inputValue.substring(0, 11);
+  inputValue = inputValue.replace(/(^\d{2})(\d)/, "($1) $2");
+  inputValue = inputValue.replace(/(\d{4,5})(\d{4}$)/, "$1-$2");
+
+  element.value = inputValue;
+}
+
+document.getElementById("email").addEventListener("input", function (event) {
+  event.target.style.borderColor = "";
+  emailFeedback.textContent = "";
+});
+
+document.getElementById("password").addEventListener("input", function (event) {
+  event.target.style.borderColor = "";
+  passwordFeedback.textContent = "";
+});

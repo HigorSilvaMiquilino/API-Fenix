@@ -37,7 +37,7 @@ public class Client {
     private Integer age;
 
     @NotEmpty
-    @Column(name = "telephone", length = 11, nullable = false)
+    @Column(name = "telephone", length = 15, nullable = false)
     private String telephone;
 
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")

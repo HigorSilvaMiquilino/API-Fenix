@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/src/main/resources/static/css/update.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <script src="/src/main/resources/static/js/update.js" defer></script>
     <title>Update Profile</title>
   </head>
@@ -15,29 +19,35 @@
 
           <label for="firstName">First Name:</label>
           <input type="text" id="firstName" name="firstName" />
+          <span id="firstNameUpdateFeedback" style="color: red"></span>
 
           <label for="lastName">Last Name:</label>
           <input type="text" id="lastName" name="lastName" />
+          <span id="lastNameUpdateFeedback" style="color: red"></span>
 
           <label for="age">Age:</label>
           <input type="number" id="age" name="age" />
+          <span id="ageUpdateFeedback" style="color: red"></span>
 
           <label for="telephone">Telephone:</label>
           <input type="tel" id="telephone" name="telephone" />
+          <span id="telephoneUpdateFeedback" style="color: red"></span>
 
           <label for="email">E-mail:</label>
           <input type="email" id="email" name="email" />
+          <span id="emailUpdateFeedback" style="color: red"></span>
 
           <label for="password">Password:</label>
           <input type="password" id="password" name="password" />
+          <span id="passwordUpdateFeedback" style="color: red"></span>
         </div>
 
         <div class="button-group">
           <button type="submit">Update</button>
         </div>
 
-        <div class="home-link">
-          <a href="home.html" style="text-decoration: none">Home</a>
+        <div class="btn">
+          <button id="homwBtn"><i class="fa fa-home"></i></button>
         </div>
       </form>
     </div>
