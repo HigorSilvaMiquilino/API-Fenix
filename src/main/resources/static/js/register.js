@@ -10,6 +10,8 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
     telephone: formData.get("telephone"),
     email: formData.get("email"),
     password: formData.get("password"),
+    imageURL:
+      "http://localhost:5500/src/main/resources/static/images/default.jpg",
   };
 
   if (validateForm()) {
@@ -114,7 +116,7 @@ function validateForm() {
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   if (!passwordRegex.test(password)) {
     passwordFeedback.textContent =
-      "Please enter your password propely, it has to be at least 8 characters length.";
+      "Please enter your password propely, it has to be at least 8 characters length and one digit.";
     document.getElementById("password").style.borderColor = "red";
     isValid = false;
   }

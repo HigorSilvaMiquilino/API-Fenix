@@ -37,7 +37,7 @@ public class Client {
     private Integer age;
 
     @NotEmpty
-    @Column(name = "telephone", length = 15, nullable = false)
+    @Column(name = "telephone", length = 20, nullable = false)
     private String telephone;
 
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
@@ -45,8 +45,11 @@ public class Client {
     private String email;
 
     @Size(min = 8, message = "Password has to be at least 8 characters long")
-    @Column(name = "password", length = 20, nullable = false, unique = true)
+    @Column(name = "password", length = 100, nullable = false, unique = true)
     private String password;
+
+    @Column(name = "imageURL")
+    private String imageURL;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Promotion> promotions;

@@ -26,7 +26,6 @@ public class ClientService {
                 .orElseThrow(() -> new ClientIdNotFoundException("Client not found with ", id));
     }
 
-    @SuppressWarnings("null")
     public Client findByName(String name) {
         Client client = this.clientRepository.findByFirstName(name);
         if (client == null) {
@@ -37,7 +36,6 @@ public class ClientService {
 
     }
 
-    @SuppressWarnings("null")
     public Client findByEmail(String email) {
         Client client = this.clientRepository.findByEmail(email);
         if (client == null) {
@@ -64,6 +62,7 @@ public class ClientService {
                 .telephone(client.getTelephone())
                 .email(client.getEmail())
                 .password(client.getPassword())
+                .imageURL(client.getImageURL())
                 .promotions(client.getPromotions())
                 .build();
         this.clientRepository.save(clientBuilt);
@@ -80,6 +79,7 @@ public class ClientService {
                     .telephone(client.getTelephone())
                     .email(client.getEmail())
                     .password(client.getPassword())
+                    .imageURL(client.getImageURL())
                     .promotions(client.getPromotions())
                     .build();
             this.clientRepository.save(ClientsBuilt);
@@ -98,6 +98,23 @@ public class ClientService {
                 existingClient.setTelephone(client.getTelephone());
                 existingClient.setEmail(client.getEmail());
                 existingClient.setPassword(client.getPassword());
+                Client clientUpdated = clientRepository.save(existingClient);
+                return Optional.of(clientUpdated);
+            } else {
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update client: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public Optional<Client> updateProfile(Client client) {
+        try {
+            Optional<Client> clientToUpdate = clientRepository.findById(client.getId());
+            if (clientToUpdate.isPresent()) {
+                Client existingClient = clientToUpdate.get();
+                existingClient.setImageURL(client.getImageURL());
                 Client clientUpdated = clientRepository.save(existingClient);
                 return Optional.of(clientUpdated);
             } else {

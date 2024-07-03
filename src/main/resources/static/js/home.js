@@ -17,6 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const cardProfile = document.createElement("div");
         cardProfile.className = "card";
         cardProfile.innerHTML = `
+            <img
+            id="currentImage"
+            src=${data.imageURL}
+            alt="Current Profile Image"
+            style="width: 250px; height: 250px"
+          />
           <h1>${data.firstName || firstName} ${data.lastName || lastName}</h1>
         <p>Great to see you here</p>
         `;
@@ -28,6 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
           <button id="deleteButtion">Delete Acount</button>
         `;
         container.insertAdjacentHTML("beforeend", buttons);
+
+        if (data.imageURL) {
+          document.getElementById("currentImage").src = data.imageURL;
+        } else {
+          document.getElementById("currentImage").src =
+            "http://localhost:5500/src/main/resources/static/images/default.jpg ";
+        }
 
         document
           .getElementById("promotions")

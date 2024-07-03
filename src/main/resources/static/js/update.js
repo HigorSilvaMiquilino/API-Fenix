@@ -15,6 +15,22 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("email").value = data.email;
         document.getElementById("password").value = data.password;
         id = data.id;
+
+        if (data.imageUrl) {
+          document.getElementById("currentImage").src = data.imageUrl;
+        } else {
+          document.getElementById("currentImage").src =
+            "http://localhost:5500/src/main/resources/static/images/default.jpg ";
+        }
+
+        if (data.imageUrl === null) {
+          document.getElementById("currentImage").src =
+            "http://localhost:5500/src/main/resources/static/images/default.jpg ";
+        }
+
+        document
+          .getElementById("formProfile")
+          .addEventListener("submit", updateProfilePicture);
       })
       .catch((error) => console.error("Error fetching client data: " + error));
   }
@@ -35,28 +51,30 @@ document
       password: formData.get("password"),
     };
 
-    fetch(`http://localhost:8080/client/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(clientUpdated),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
+    if (validateUpdateForm()) {
+      fetch(`http://localhost:8080/client/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(clientUpdated),
       })
-      .then((data) => {
-        alert(data.message);
-        localStorage.setItem("userEmail", data.client.email);
-        localStorage.setItem("userFirstName", data.client.firstName);
-        localStorage.setItem("userLastName", data.client.lastName);
-        window.location.href =
-          "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
-      })
-      .catch((error) => console.error("Error updating client: " + error));
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          alert(data.message);
+          localStorage.setItem("userEmail", data.client.email);
+          localStorage.setItem("userFirstName", data.client.firstName);
+          localStorage.setItem("userLastName", data.client.lastName);
+          window.location.href =
+            "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
+        })
+        .catch((error) => console.error("Error updating client: " + error));
+    }
   });
 
 const firstNameUpdateFeedback = document.getElementById(
@@ -140,7 +158,7 @@ function validateUpdateForm() {
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   if (!passwordRegex.test(password)) {
     passwordUpdateFeedback.textContent =
-      "Please enter your password propely, it has to be at least 8 characters length.";
+      "Please enter your password propely, it has to be at least 8 characters length and one digit.";
     document.getElementById("password").style.borderColor = "red";
     isValid = false;
   }
@@ -198,8 +216,14 @@ document.getElementById("password").addEventListener("input", function (event) {
   passwordUpdateFeedback.textContent = "";
 });
 
-document.getElementById("homwBtn").addEventListener("click", function () {
+document.getElementById("homeBtn").addEventListener("click", function () {
   localStorage.setItem("userEmail", email);
   window.location.href =
     "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
+});
+
+document.getElementById("profileBtn").addEventListener("click", function () {
+  localStorage.setItem("userEmail", email);
+  window.location.href =
+    "http://127.0.0.1:5500/src/main/resources/static/html/updateProfilePicture.html";
 });
