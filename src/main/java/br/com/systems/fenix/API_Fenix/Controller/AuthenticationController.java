@@ -13,12 +13,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.systems.fenix.API_Fenix.Dto.AuthResponseDTO;
 import br.com.systems.fenix.API_Fenix.Dto.LoginDTO;
 import br.com.systems.fenix.API_Fenix.Dto.RegisterDto;
 import br.com.systems.fenix.API_Fenix.Model.Roles;
 import br.com.systems.fenix.API_Fenix.Model.UserEntity;
 import br.com.systems.fenix.API_Fenix.Repository.RolesRepository;
 import br.com.systems.fenix.API_Fenix.Repository.UserRepository;
+import br.com.systems.fenix.API_Fenix.security.JWTGenerator;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -38,12 +41,17 @@ public class AuthenticationController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JWTGenerator jwtGenerator;
+
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO LoginDTO) {
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDTO LoginDTO) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(LoginDTO.getUsername(), LoginDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User singed success!", HttpStatus.OK);
+        String token = jwtGenerator.generateToken(authentication);
+
+        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
     }
 
     @PostMapping("/register")
