@@ -19,6 +19,8 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
+        "User-Agent": navigator.userAgent,
       },
       body: JSON.stringify(client),
     })
