@@ -1,29 +1,44 @@
 package br.com.systems.fenix.API_Fenix.Service;
 
 import br.com.systems.fenix.API_Fenix.Model.Client;
+import br.com.systems.fenix.API_Fenix.Model.enuns.ProfileEnum;
 import br.com.systems.fenix.API_Fenix.Repository.ClientRepository;
+import br.com.systems.fenix.API_Fenix.exception.AuthorizationException;
 import br.com.systems.fenix.API_Fenix.exception.ClientEmailNotFoundException;
 import br.com.systems.fenix.API_Fenix.exception.ClientIdNotFoundException;
 import br.com.systems.fenix.API_Fenix.exception.ClientNameNotFoundException;
 import br.com.systems.fenix.API_Fenix.exception.ClientsNotFoundException;
+import br.com.systems.fenix.API_Fenix.security.CustomUserDetailsService;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ClientService {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private ClientRepository clientRepository;
 
     public Client findById(Long id) {
+        CustomUserDetailsService userDetailsService = authenticated();
+        if (userDetailsService == null
+                || !userDetailsService.hasRole(ProfileEnum.ADMIN) && !id.equals(userDetailsService.getId()))
+            throw new AuthorizationException("Access denied");
+
         Optional<Client> client = this.clientRepository.findById(id);
         return client
-                .orElseThrow(() -> new ClientIdNotFoundException("Client not found with ", id));
+                .orElseThrow(() -> new ClientIdNotFoundException("Client not found with id:", id));
     }
 
     public Client findByName(String name) {
@@ -61,7 +76,8 @@ public class ClientService {
                 .age(client.getAge())
                 .telephone(client.getTelephone())
                 .email(client.getEmail())
-                .password(client.getPassword())
+                .password(this.passwordEncoder.encode(client.getPassword()))
+                .profiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()))
                 .imageURL(client.getImageURL())
                 .promotions(client.getPromotions())
                 .build();
@@ -78,7 +94,8 @@ public class ClientService {
                     .age(client.getAge())
                     .telephone(client.getTelephone())
                     .email(client.getEmail())
-                    .password(client.getPassword())
+                    .password(this.passwordEncoder.encode(client.getPassword()))
+                    .profiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()))
                     .imageURL(client.getImageURL())
                     .promotions(client.getPromotions())
                     .build();
@@ -97,7 +114,8 @@ public class ClientService {
                 existingClient.setAge(client.getAge());
                 existingClient.setTelephone(client.getTelephone());
                 existingClient.setEmail(client.getEmail());
-                existingClient.setPassword(client.getPassword());
+                existingClient.setPassword(this.passwordEncoder.encode(client.getPassword()));
+
                 Client clientUpdated = clientRepository.save(existingClient);
                 return Optional.of(clientUpdated);
             } else {
@@ -127,6 +145,7 @@ public class ClientService {
 
     @Transactional
     public void delete(Long id) {
+        findById(id);
         try {
             clientRepository.deleteById(id);
         } catch (Exception e) {
@@ -137,5 +156,13 @@ public class ClientService {
     public boolean validateClient(String email, String password) {
         Client client = clientRepository.findByEmail(email);
         return client != null && client.getPassword().equals(password);
+    }
+
+    public static CustomUserDetailsService authenticated() {
+        try {
+            return (CustomUserDetailsService) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

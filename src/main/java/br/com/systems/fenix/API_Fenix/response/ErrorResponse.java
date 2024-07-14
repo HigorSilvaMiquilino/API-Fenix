@@ -24,4 +24,9 @@ public class ErrorResponse {
   private String message;
   private String path;
   private String trace;
+
+  public String toJson() {
+    return "{\"status\": " + getStatus() + ", " +
+        "\"message\": \"" + getMessage() + "\"}";
+  }
 }

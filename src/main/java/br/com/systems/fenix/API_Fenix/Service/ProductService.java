@@ -16,23 +16,22 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Product findById(Long id){
+    public Product findById(Long id) {
         Optional<Product> product = this.productRepository.findById(id);
-        return  product.orElseThrow(() -> new EntityNotFoundException(
-                "Product not found with " + id
-        ));
+        return product.orElseThrow(() -> new EntityNotFoundException(
+                "Product not found with " + id));
     }
 
-    public Product findByName(String name){
+    public Product findByName(String name) {
         return this.productRepository.findByProductName(name);
     }
 
-    public List<Product> findAllProducts(){
+    public List<Product> findAllProducts() {
         return this.productRepository.findAll();
     }
 
     @Transactional
-    public Product save(Product product){
+    public Product save(Product product) {
         Product productBuilt = Product.builder()
                 .productName(product.getProductName())
                 .price(product.getPrice())
@@ -43,8 +42,8 @@ public class ProductService {
     }
 
     @Transactional
-    public void save(List<Product> products){
-        for (Product product: products){
+    public void save(List<Product> products) {
+        for (Product product : products) {
             Product promotionBuilt = Product.builder()
                     .productName(product.getProductName())
                     .price(product.getPrice())
@@ -55,10 +54,10 @@ public class ProductService {
     }
 
     @Transactional
-    public Optional<Product> update(Product product){
+    public Optional<Product> update(Product product) {
         try {
             Optional<Product> productToUpdate = productRepository.findById(product.getId());
-            if(productToUpdate.isPresent()){
+            if (productToUpdate.isPresent()) {
                 Product existingProduct = productToUpdate.get();
                 existingProduct.setProductName(product.getProductName());
                 existingProduct.setPrice(product.getPrice());
@@ -66,7 +65,7 @@ public class ProductService {
                 Product productUpdated = productRepository.save(existingProduct);
                 return Optional.of(productUpdated);
             } else {
-                return  Optional.empty();
+                return Optional.empty();
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to update product: " + e.getMessage());
@@ -74,16 +73,12 @@ public class ProductService {
     }
 
     @Transactional
-    public void delete(Long id ){
+    public void delete(Long id) {
         try {
             productRepository.deleteById(id);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Failed to delete product: " + e.getMessage());
         }
     }
-
-
-
-
 
 }

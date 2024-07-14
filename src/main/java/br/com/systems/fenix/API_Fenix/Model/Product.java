@@ -1,7 +1,7 @@
 package br.com.systems.fenix.API_Fenix.Model;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
@@ -18,8 +18,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
-    @Column(name = "productName", length = 255, nullable = false)
+    @NotBlank
+    @Column(name = "productName", length = 255)
     private String productName;
 
     @NotEmpty
