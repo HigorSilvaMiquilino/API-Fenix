@@ -17,25 +17,25 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
   if (validateForm()) {
     fetch("http://localhost:8080/client", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=utf8",
         Accept: "application/json",
         "User-Agent": navigator.userAgent,
-      },
+      }),
       body: JSON.stringify(client),
     })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
+        const token = response.headers.get("Authorization");
+        return response.json().then((data) => ({ data, token }));
       })
-      .then((data) => {
-        console.log("Success:", data);
+      .then(({ data, token }) => {
+        console.log("Success:", data.message);
         alert("Welcome: " + data.client.firstName);
         localStorage.setItem("userEmail", data.client.email);
         localStorage.setItem("userFirstName", data.client.firstName);
         localStorage.setItem("userLastName", data.client.lastName);
+        localStorage.setItem("Authorization", token);
+
         window.location.href =
           "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
       })

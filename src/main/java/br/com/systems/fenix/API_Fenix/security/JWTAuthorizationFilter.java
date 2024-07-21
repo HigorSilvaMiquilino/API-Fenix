@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import br.com.systems.fenix.API_Fenix.Service.JWTUtil;
 import br.com.systems.fenix.API_Fenix.Service.UserDetailsServiceImpl;
 
 import jakarta.servlet.FilterChain;
@@ -19,11 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private JWTUtil jwtUtil;
+    private JWTUtilities jwtUtil;
 
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JWTUtilities jwtUtil,
             UserDetailsServiceImpl userDetailsServiceImpl) {
         super(authenticationManager);
         this.jwtUtil = jwtUtil;
@@ -33,7 +32,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
-
         String authorizationHeader = request.getHeader("Authorization");
         if (Objects.nonNull(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);

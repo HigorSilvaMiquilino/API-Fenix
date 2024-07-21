@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
 public class AuthorizationException extends AccessDeniedException {
 
-    public AuthorizationException(String file) {
-        super(file);
+    public AuthorizationException(String message) {
+        super(message);
     }
 
 }

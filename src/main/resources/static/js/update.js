@@ -1,11 +1,19 @@
 let id;
 let email;
+let key = "Authorization";
+let password;
 
 document.addEventListener("DOMContentLoaded", function () {
   email = localStorage.getItem("userEmail");
 
   if (email) {
-    fetch(`http://localhost:8080/client/email/${email}`)
+    fetch(`http://localhost:8080/client/email/${email}`, {
+      method: "GET",
+      headers: new Headers({
+        Authorization: localStorage.getItem(key),
+        "Content-Type": "application/json",
+      }),
+    })
       .then((response) => response.json())
       .then((data) => {
         document.getElementById("firstName").value = data.firstName;
@@ -13,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("age").value = data.age;
         document.getElementById("telephone").value = data.telephone;
         document.getElementById("email").value = data.email;
-        document.getElementById("password").value = data.password;
+        password = data.password;
         id = data.id;
 
         if (data.imageUrl) {
@@ -48,21 +56,18 @@ document
       age: formData.get("age"),
       telephone: formData.get("telephone"),
       email: formData.get("email"),
-      password: formData.get("password"),
     };
 
     if (validateUpdateForm()) {
       fetch(`http://localhost:8080/client/${id}`, {
         method: "PUT",
-        headers: {
+        headers: new Headers({
+          Authorization: localStorage.getItem(key),
           "Content-Type": "application/json",
-        },
+        }),
         body: JSON.stringify(clientUpdated),
       })
         .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
           return response.json();
         })
         .then((data) => {
@@ -93,31 +98,24 @@ const telephoneUpdateFeedback = document.getElementById(
 
 const emailUpdateFeedback = document.getElementById("emailUpdateFeedback");
 
-const passwordUpdateFeedback = document.getElementById(
-  "passwordUpdateFeedback"
-);
-
 function validateUpdateForm() {
   const firstName = document.getElementById("firstName").value;
   const lastName = document.getElementById("lastName").value;
   const age = document.getElementById("age").value;
   const telephone = document.getElementById("telephone").value;
   const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
 
   firstNameUpdateFeedback.textContent = "";
   lastNameUpdateFeedback.textContent = "";
   ageUpdateFeedback.textContent = "";
   telephoneUpdateFeedback.textContent = "";
   emailUpdateFeedback.textContent = "";
-  passwordUpdateFeedback.textContent = "";
 
   document.getElementById("firstName").style.borderColor = "";
   document.getElementById("lastName").style.borderColor = "";
   document.getElementById("age").style.borderColor = "";
   document.getElementById("telephone").style.borderColor = "";
   document.getElementById("email").style.borderColor = "";
-  document.getElementById("password").style.borderColor = "";
 
   let isValid = true;
 
@@ -152,14 +150,6 @@ function validateUpdateForm() {
   if (!emailRegex.test(email)) {
     emailUpdateFeedback.textContent = "Please enter your e-mail propely.";
     document.getElementById("email").style.borderColor = "red";
-    isValid = false;
-  }
-
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-  if (!passwordRegex.test(password)) {
-    passwordUpdateFeedback.textContent =
-      "Please enter your password propely, it has to be at least 8 characters length and one digit.";
-    document.getElementById("password").style.borderColor = "red";
     isValid = false;
   }
 
@@ -209,11 +199,6 @@ function phoneMaskBrazil(event) {
 document.getElementById("email").addEventListener("input", function (event) {
   event.target.style.borderColor = "";
   emailUpdateFeedback.textContent = "";
-});
-
-document.getElementById("password").addEventListener("input", function (event) {
-  event.target.style.borderColor = "";
-  passwordUpdateFeedback.textContent = "";
 });
 
 document.getElementById("homeBtn").addEventListener("click", function () {

@@ -114,8 +114,6 @@ public class ClientService {
                 existingClient.setAge(client.getAge());
                 existingClient.setTelephone(client.getTelephone());
                 existingClient.setEmail(client.getEmail());
-                existingClient.setPassword(this.passwordEncoder.encode(client.getPassword()));
-
                 Client clientUpdated = clientRepository.save(existingClient);
                 return Optional.of(clientUpdated);
             } else {

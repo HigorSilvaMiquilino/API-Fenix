@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -19,6 +20,7 @@ import br.com.systems.fenix.API_Fenix.response.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler implements AuthenticationFailureHandler {
@@ -35,7 +37,7 @@ public class GlobalExceptionHandler implements AuthenticationFailureHandler {
         .status(status.value())
         .error(status.getReasonPhrase())
         .message(ex.getMessage() + parameter)
-        .path(request.getDescription(false))
+        .path(request.getDescription(true))
         .exception(ex.getClass().getName())
         .trace(stackTrace)
         .build();
@@ -55,6 +57,7 @@ public class GlobalExceptionHandler implements AuthenticationFailureHandler {
         .timestamp(LocalDateTime.now())
         .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
         .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+        .exception(ex.getClass().getName())
         .message(ex.getMessage())
         .path(request.getDescription(true))
         .trace(stackTrace)
@@ -77,17 +80,55 @@ public class GlobalExceptionHandler implements AuthenticationFailureHandler {
         .status(HttpStatus.NOT_FOUND.value())
         .error(HttpStatus.NOT_FOUND.getReasonPhrase())
         .message(ex.getMessage() + "Id: " + ex.getId())
-        .path(request.getDescription(false))
+        .path(request.getDescription(true))
         .exception(ex.getClass().getName())
         .trace(stackTrace)
         .build();
     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
   }
 
+  @ExceptionHandler(ConstraintViolationException.class)
+  @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+  public ResponseEntity<Object> handleConstraintViolationException(
+      ConstraintViolationException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), null, request,
+        ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public ResponseEntity<Object> handleDataIntegrityViolationException(
+      DataBindingViolationException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), null, request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+
+  }
+
+  @ExceptionHandler(DataBindingViolationException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public ResponseEntity<Object> handleDataBindingViolationException(
+      DataBindingViolationException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), null, request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public ResponseEntity<Object> handleAuthenticationException(
+      AuthenticationException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), null, request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+  }
+
   @ExceptionHandler(AuthorizationException.class)
   @ResponseStatus(HttpStatus.FORBIDDEN)
-  public ResponseEntity<Object> handleAuthorizationException(AuthenticationException ex,
-      AccessDeniedException accessDeniedException, WebRequest request) {
+  public ResponseEntity<Object> handleAuthorizationException(AuthorizationException ex,
+      WebRequest request) {
 
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
@@ -99,12 +140,22 @@ public class GlobalExceptionHandler implements AuthenticationFailureHandler {
         .status(HttpStatus.FORBIDDEN.value())
         .error(HttpStatus.FORBIDDEN.getReasonPhrase())
         .message(ex.getMessage())
-        .path(request.getDescription(false))
+        .path(request.getDescription(true))
         .exception(ex.getClass().getName())
         .trace(stackTrace)
         .build();
 
     return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ResponseEntity<Object> handleAccessDeniedException(
+      AccessDeniedException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage(), null, request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+
   }
 
   @ExceptionHandler(ClientNameNotFoundException.class)
@@ -135,7 +186,9 @@ public class GlobalExceptionHandler implements AuthenticationFailureHandler {
     Integer status = HttpStatus.UNAUTHORIZED.value();
     response.setStatus(status);
     response.setContentType("application/json");
-    ErrorResponse errorResponse = ErrorResponse.builder().status(status).message("Invalid e-mail or password").build();
+    ErrorResponse errorResponse = ErrorResponse.builder().status(status)
+        .message("Username or password are invalid")
+        .build();
     response.getWriter().append(errorResponse.toJson());
   }
 }

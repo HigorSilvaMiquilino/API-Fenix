@@ -4,14 +4,13 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import br.com.systems.fenix.API_Fenix.Model.enuns.ProfileEnum;
-import br.com.systems.fenix.API_Fenix.Repository.UserRepository;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,9 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class CustomUserDetailsService implements UserDetails {
-
-    @Autowired
-    private UserRepository userRepository;
 
     private Long id;
     private String username;

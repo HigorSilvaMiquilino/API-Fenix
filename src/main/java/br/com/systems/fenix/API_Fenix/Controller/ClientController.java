@@ -2,6 +2,8 @@ package br.com.systems.fenix.API_Fenix.Controller;
 
 import br.com.systems.fenix.API_Fenix.Model.Client;
 import br.com.systems.fenix.API_Fenix.Service.ClientService;
+import br.com.systems.fenix.API_Fenix.response.ResponseClient;
+import br.com.systems.fenix.API_Fenix.security.JWTUtilities;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,9 +18,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -28,6 +28,9 @@ public class ClientController {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private JWTUtilities jwtUtilities;
 
     @GetMapping("/{id}")
     public ResponseEntity<Client> findById(@PathVariable Long id) {
@@ -55,13 +58,17 @@ public class ClientController {
 
     @PostMapping
     @Validated
-    public ResponseEntity<Map<String, Object>> crete(@RequestBody Client client) {
+    public ResponseEntity<ResponseClient> crete(@RequestBody Client client) {
         this.clientService.save(client);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(client.getId()).toUri();
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Client created successfully");
-        response.put("client", client);
-        return ResponseEntity.created(uri).body(response);
+        ResponseClient response = ResponseClient.builder()
+                .status(HttpStatus.CREATED.value())
+                .message("Client created successfully, wellcome " + client.getFirstName())
+                .client(client)
+                .build();
+        String token = "Bearer " + this.jwtUtilities.generateToken(client.getEmail());
+
+        return ResponseEntity.created(uri).header("Authorization", token).body(response);
     }
 
     @PostMapping("/all")
@@ -73,19 +80,21 @@ public class ClientController {
 
     @PutMapping("/{id}")
     @Validated
-    public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, @RequestBody Client client) {
+    public ResponseEntity<ResponseClient> update(@PathVariable Long id, @RequestBody Client client) {
         client.setId(id);
         this.clientService.update(client);
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Client updated successfully");
-        response.put("client", client);
+        ResponseClient response = ResponseClient.builder()
+                .status(HttpStatus.OK.value())
+                .message("Client updated successfully")
+                .client(client)
+                .build();
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/profile")
-    public ResponseEntity<Map<String, Object>> updateProfile(
+    public ResponseEntity<ResponseClient> updateProfile(
             @PathVariable Long id,
-            @RequestParam(value = "imageURL", required = false) MultipartFile imageURL) throws IOException {
+            @RequestParam(value = "imageURL") MultipartFile imageURL) throws IOException {
         Optional<Client> clientOptional = Optional.ofNullable(clientService.findById(id));
 
         if (clientOptional.isPresent()) {
@@ -100,23 +109,31 @@ public class ClientController {
                 client.setImageURL("http://localhost:5500/" + path.toString());
                 clientService.updateProfile(client);
 
-                Map<String, Object> response = new HashMap<>();
-                response.put("message", "Profile picture updated successfully");
-                response.put("client", client);
+                ResponseClient response = ResponseClient.builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Profile picture updated successfully")
+                        .client(client)
+                        .build();
+
                 return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.badRequest().body(Map.of("message", "File is empty"));
+                return ResponseEntity.badRequest().body(ResponseClient.builder().message("File is empty").build());
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Client not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseClient.builder().message("Client not found").build());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> delete(@PathVariable Long id) {
+    public ResponseEntity<ResponseClient> delete(@PathVariable Long id) {
         this.clientService.delete(id);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Client deleted successfully");
+
+        ResponseClient response = ResponseClient.builder()
+                .status(HttpStatus.OK.value())
+                .message("Client deleted successfully")
+                .build();
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

@@ -1,4 +1,4 @@
-package br.com.systems.fenix.API_Fenix.Service;
+package br.com.systems.fenix.API_Fenix.security;
 
 import java.util.Date;
 import java.util.Objects;
@@ -13,7 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-public class JWTUtil {
+public class JWTUtilities {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -21,10 +21,10 @@ public class JWTUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         SecretKey key = getKeyBySecret();
         return Jwts.builder()
-                .subject(username)
+                .subject(email)
                 .expiration(new Date(System.currentTimeMillis() + this.expiration))
                 .signWith(key)
                 .compact();

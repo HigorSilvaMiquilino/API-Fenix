@@ -1,11 +1,18 @@
 let id;
 let email;
+let key = "Authorization";
 
 document.addEventListener("DOMContentLoaded", function () {
   email = localStorage.getItem("userEmail");
 
   if (email) {
-    fetch(`http://localhost:8080/client/email/${email}`)
+    fetch(`http://localhost:8080/client/email/${email}`, {
+      method: "GET",
+      headers: new Headers({
+        Authorization: localStorage.getItem(key),
+        "Content-Type": "application/json",
+      }),
+    })
       .then((response) => response.json())
       .then((data) => {
         const container = document.getElementById("cardProfile");
@@ -65,23 +72,13 @@ function updateProfilePicture(event) {
 
   fetch(`http://localhost:8080/client/${id}/profile`, {
     method: "PUT",
+    headers: new Headers({
+      Authorization: localStorage.getItem(key),
+    }),
     body: formData,
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Success:", data.message);
-      const currentImage = document.getElementById("currentImage");
-      if (currentImage) {
-        currentImage.src = data.client.imageURL;
-        window.location.href =
-          "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
-      } else {
-        console.error("Current image element not found");
-      }
-    })
-    .catch((error) =>
-      console.error("Error updating profile picture: " + error)
-    );
+  }).catch((error) =>
+    console.error("Error updating profile picture: " + error)
+  );
 }
 
 function home() {

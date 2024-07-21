@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.systems.fenix.API_Fenix.Model.Client;
-import br.com.systems.fenix.API_Fenix.Service.JWTUtil;
 import br.com.systems.fenix.API_Fenix.exception.GlobalExceptionHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,9 +23,9 @@ public class JWTAuthenticationFilterChain extends UsernamePasswordAuthentication
 
     private AuthenticationManager authenticationManager;
 
-    private JWTUtil jwtUtil;
+    private JWTUtilities jwtUtil;
 
-    public JWTAuthenticationFilterChain(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public JWTAuthenticationFilterChain(AuthenticationManager authenticationManager, JWTUtilities jwtUtil) {
         setAuthenticationFailureHandler(new GlobalExceptionHandler());
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -39,7 +38,7 @@ public class JWTAuthenticationFilterChain extends UsernamePasswordAuthentication
             Client clientCredentials = new ObjectMapper().readValue(request.getInputStream(), Client.class);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    clientCredentials.getFirstName(), clientCredentials.getPassword(), new ArrayList<>());
+                    clientCredentials.getEmail(), clientCredentials.getPassword(), new ArrayList<>());
 
             Authentication authentication = this.authenticationManager.authenticate(authToken);
             return authentication;
@@ -56,6 +55,7 @@ public class JWTAuthenticationFilterChain extends UsernamePasswordAuthentication
         String token = this.jwtUtil.generateToken(username);
         response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("access-control-expose-headers", "Authorization");
+        response.setContentType("application/json");
     }
 
 }

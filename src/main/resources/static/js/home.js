@@ -6,7 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const lastName = localStorage.getItem("userLastName");
 
   if (email) {
-    fetch(`http://localhost:8080/client/email/${email}`)
+    fetch(`http://localhost:8080/client/email/${email}`, {
+      method: "GET",
+      headers: new Headers({
+        Authorization: localStorage.getItem("Authorization"),
+        "Content-Type": "application/json",
+      }),
+    })
       .then((response) => response.json())
       .then((data) => {
         const container = document.getElementById("cardProfile");
@@ -58,7 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function fetchPromotion() {
-  fetch("http://localhost:8080/promotion/all")
+  fetch("http://localhost:8080/promotion/all", {
+    method: "GET",
+    headers: new Headers({
+      Authorization: localStorage.getItem("Authorization"),
+      "Content-Type": "application/json",
+    }),
+  })
     .then((response) => response.json())
     .then((data) => {
       const container = document.getElementById("cardsContainer");
@@ -88,6 +100,10 @@ function deleteAccount() {
   if (confirm("Are you sure you want to delete this account?")) {
     fetch(`http://localhost:8080/client/${idClient}`, {
       method: "DELETE",
+      headers: new Headers({
+        Authorization: localStorage.getItem("Authorization"),
+        "Content-Type": "application/json",
+      }),
     })
       .then((response) => {
         if (!response.ok) {
