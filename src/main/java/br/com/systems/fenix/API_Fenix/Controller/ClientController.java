@@ -4,10 +4,13 @@ import br.com.systems.fenix.API_Fenix.Model.Client;
 import br.com.systems.fenix.API_Fenix.Service.ClientService;
 import br.com.systems.fenix.API_Fenix.response.ResponseClient;
 import br.com.systems.fenix.API_Fenix.security.JWTUtilities;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +21,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +34,10 @@ public class ClientController {
     private ClientService clientService;
 
     @Autowired
-    private JWTUtilities jwtUtilities;
+    ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    JWTUtilities jwtUtilities;
 
     @GetMapping("/{id}")
     public ResponseEntity<Client> findById(@PathVariable Long id) {
@@ -58,14 +65,18 @@ public class ClientController {
 
     @PostMapping
     @Validated
-    public ResponseEntity<ResponseClient> crete(@RequestBody Client client) {
+    public ResponseEntity<ResponseClient> crete(@RequestBody Client client, HttpServletRequest request, Errors errors) {
         this.clientService.save(client);
+
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(client.getId()).toUri();
         ResponseClient response = ResponseClient.builder()
-                .status(HttpStatus.CREATED.value())
+                .timeStamp(LocalDateTime.now().toString())
+                .statusCode(HttpStatus.CREATED.value())
+                .status(HttpStatus.CREATED)
                 .message("Client created successfully, wellcome " + client.getFirstName())
                 .client(client)
                 .build();
+
         String token = "Bearer " + this.jwtUtilities.generateToken(client.getEmail());
 
         return ResponseEntity.created(uri).header("Authorization", token).body(response);
@@ -84,10 +95,13 @@ public class ClientController {
         client.setId(id);
         this.clientService.update(client);
         ResponseClient response = ResponseClient.builder()
-                .status(HttpStatus.OK.value())
+                .timeStamp(LocalDateTime.now().toString())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
                 .message("Client updated successfully")
                 .client(client)
                 .build();
+
         return ResponseEntity.ok(response);
     }
 
@@ -110,7 +124,9 @@ public class ClientController {
                 clientService.updateProfile(client);
 
                 ResponseClient response = ResponseClient.builder()
-                        .status(HttpStatus.OK.value())
+                        .timeStamp(LocalDateTime.now().toString())
+                        .statusCode(HttpStatus.OK.value())
+                        .status(HttpStatus.OK)
                         .message("Profile picture updated successfully")
                         .client(client)
                         .build();
@@ -130,10 +146,11 @@ public class ClientController {
         this.clientService.delete(id);
 
         ResponseClient response = ResponseClient.builder()
-                .status(HttpStatus.OK.value())
+                .timeStamp(LocalDateTime.now().toString())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
                 .message("Client deleted successfully")
                 .build();
-
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

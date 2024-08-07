@@ -93,7 +93,7 @@ function fetchPromotion() {
 
 function updateProfile() {
   window.location.href =
-    "http://127.0.0.1:5500/src/main/resources/static/html/updateProfile.html";
+    "http://127.0.0.1:5500/src/main/resources/templates/updateProfile.html";
 }
 
 function deleteAccount() {
@@ -114,7 +114,7 @@ function deleteAccount() {
       .then((data) => {
         alert("Account deleted succesfully");
         window.location.href =
-          "http://127.0.0.1:5500/src/main/resources/static/html/login.html";
+          "http://127.0.0.1:5500/src/main/resources/templates/login.html";
       })
       .catch((error) => console.error("Error deleting account: " + error));
   }

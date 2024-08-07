@@ -1,5 +1,9 @@
 package br.com.systems.fenix.API_Fenix.response;
 
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+
 import br.com.systems.fenix.API_Fenix.Model.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +18,13 @@ import lombok.Setter;
 @Builder
 public class ResponseClient {
 
-    private int status;
+    private String timeStamp;
+    private int statusCode;
+    private HttpStatus status;
     private String message;
+    private String developerMessage;
     private Client client;
-
+    private String path;
+    private String requestMethod;
+    private Map<?, ?> data;
 }

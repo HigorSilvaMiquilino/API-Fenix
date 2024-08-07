@@ -51,11 +51,13 @@ public class JWTAuthenticationFilterChain extends UsernamePasswordAuthentication
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain, Authentication authentication) throws IOException, ServletException {
         CustomUserDetailsService customUserDetailsService = (CustomUserDetailsService) authentication.getPrincipal();
+
         String username = customUserDetailsService.getUsername();
         String token = this.jwtUtil.generateToken(username);
         response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("access-control-expose-headers", "Authorization");
         response.setContentType("application/json");
+
     }
 
 }

@@ -76,7 +76,7 @@ document
           localStorage.setItem("userFirstName", data.client.firstName);
           localStorage.setItem("userLastName", data.client.lastName);
           window.location.href =
-            "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
+            "http://127.0.0.1:5500/src/main/resources/templates/home.html";
         })
         .catch((error) => console.error("Error updating client: " + error));
     }
@@ -204,11 +204,11 @@ document.getElementById("email").addEventListener("input", function (event) {
 document.getElementById("homeBtn").addEventListener("click", function () {
   localStorage.setItem("userEmail", email);
   window.location.href =
-    "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
+    "http://127.0.0.1:5500/src/main/resources/templates/home.html";
 });
 
 document.getElementById("profileBtn").addEventListener("click", function () {
   localStorage.setItem("userEmail", email);
   window.location.href =
-    "http://127.0.0.1:5500/src/main/resources/static/html/updateProfilePicture.html";
+    "http://127.0.0.1:5500/src/main/resources/templates/updateProfilePicture.html";
 });

@@ -57,8 +57,8 @@ public class Client {
     @Column(name = "password", length = 100, unique = true)
     private String password;
 
-    @Column(name = "imageURL")
-    private String imageURL;
+    @Column(nullable = false)
+    private boolean isEnabled;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Promotion> promotions;
@@ -69,6 +69,9 @@ public class Client {
     @Column(name = "profile", nullable = false)
     @Builder.Default
     private Set<Integer> profiles = new HashSet<>();
+
+    @Column(name = "imageURL")
+    private String imageURL;
 
     public Set<ProfileEnum> getProfile() {
         return this.profiles.stream().map(enumeration -> ProfileEnum.toEnum(enumeration)).collect(Collectors.toSet());

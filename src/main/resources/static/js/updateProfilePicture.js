@@ -84,5 +84,5 @@ function updateProfilePicture(event) {
 function home() {
   localStorage.setItem("userEmail", email);
   window.location.href =
-    "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
+    "http://127.0.0.1:5500/src/main/resources/templates/home.html";
 }

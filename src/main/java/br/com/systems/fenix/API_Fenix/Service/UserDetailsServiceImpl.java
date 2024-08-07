@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("Username not found: " + email);
 
         return new CustomUserDetailsService(client.getId(), client.getEmail(), client.getPassword(),
-                client.getProfile());
+                client.isEnabled(), client.getProfile());
     }
 
 }

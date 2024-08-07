@@ -35,9 +35,8 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
         localStorage.setItem("userFirstName", data.client.firstName);
         localStorage.setItem("userLastName", data.client.lastName);
         localStorage.setItem("Authorization", token);
-
         window.location.href =
-          "http://127.0.0.1:5500/src/main/resources/static/html/home.html";
+          "http://127.0.0.1:5500/src/main/resources/templates/greeting.html";
       })
       .catch((error) => {
         console.error("Error:", error);

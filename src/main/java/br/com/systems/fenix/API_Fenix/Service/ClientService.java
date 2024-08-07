@@ -1,8 +1,13 @@
 package br.com.systems.fenix.API_Fenix.Service;
 
 import br.com.systems.fenix.API_Fenix.Model.Client;
+import br.com.systems.fenix.API_Fenix.Model.PasswordResetToken;
+import br.com.systems.fenix.API_Fenix.Model.ValidationToken;
 import br.com.systems.fenix.API_Fenix.Model.enuns.ProfileEnum;
 import br.com.systems.fenix.API_Fenix.Repository.ClientRepository;
+import br.com.systems.fenix.API_Fenix.Repository.PasswordResetTokenRepository;
+import br.com.systems.fenix.API_Fenix.Repository.ValidationTokenRepository;
+import br.com.systems.fenix.API_Fenix.Service.impl.EmailServiceImpl;
 import br.com.systems.fenix.API_Fenix.exception.AuthorizationException;
 import br.com.systems.fenix.API_Fenix.exception.ClientEmailNotFoundException;
 import br.com.systems.fenix.API_Fenix.exception.ClientIdNotFoundException;
@@ -29,6 +34,15 @@ public class ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private EmailServiceImpl emailServiceImpl;
+
+    @Autowired
+    private ValidationTokenRepository validationTokenRepository;
+
+    @Autowired
+    PasswordResetTokenRepository passwordResetTokenRepository;
 
     public Client findById(Long id) {
         CustomUserDetailsService userDetailsService = authenticated();
@@ -70,19 +84,43 @@ public class ClientService {
 
     @Transactional
     public Client save(Client client) {
-        Client clientBuilt = Client.builder()
-                .firstName(client.getFirstName())
-                .lastName(client.getLastName())
-                .age(client.getAge())
-                .telephone(client.getTelephone())
-                .email(client.getEmail())
-                .password(this.passwordEncoder.encode(client.getPassword()))
-                .profiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()))
-                .imageURL(client.getImageURL())
-                .promotions(client.getPromotions())
-                .build();
-        this.clientRepository.save(clientBuilt);
-        return clientBuilt;
+        if (clientRepository.existsByEmail(client.getEmail())) {
+            throw new RuntimeException("email already existis");
+        } else {
+            Client clientBuilt = Client.builder()
+                    .firstName(client.getFirstName())
+                    .lastName(client.getLastName())
+                    .age(client.getAge())
+                    .telephone(client.getTelephone())
+                    .email(client.getEmail())
+                    .password(this.passwordEncoder.encode(client.getPassword()))
+                    .profiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()))
+                    .imageURL(client.getImageURL())
+                    .promotions(client.getPromotions())
+                    .isEnabled(false)
+                    .build();
+            this.clientRepository.save(clientBuilt);
+
+            ValidationToken validationToken = new ValidationToken(clientBuilt);
+            validationTokenRepository.save(validationToken);
+
+            emailServiceImpl.sendHtmlEmail(client.getFirstName(), client.getEmail(), validationToken.getToken());
+            return clientBuilt;
+        }
+    }
+
+    public Boolean verirfyToken(String token) {
+        ValidationToken validation = validationTokenRepository.findByToken(token);
+        Client client = clientRepository.findByEmail(validation.getClient().getEmail());
+        client.setEnabled(true);
+        clientRepository.save(client);
+        return Boolean.TRUE;
+
+    }
+
+    public void changeClientPassword(Client client, String password) {
+        client.setPassword(this.passwordEncoder.encode(password));
+        this.clientRepository.save(client);
     }
 
     @Transactional
@@ -163,4 +201,10 @@ public class ClientService {
             return null;
         }
     }
+
+    public void createPasswordResetTokenForClient(Client client, String token) {
+        PasswordResetToken myTOToken = new PasswordResetToken(token, client);
+        passwordResetTokenRepository.save(myTOToken);
+    }
+
 }

@@ -23,8 +23,10 @@ public class CustomUserDetailsService implements UserDetails {
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+    private boolean isEnabled;
 
-    public CustomUserDetailsService(Long id, String username, String password, Set<ProfileEnum> profileEnums) {
+    public CustomUserDetailsService(Long id, String username, String password, boolean isEnabled,
+            Set<ProfileEnum> profileEnums) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -32,6 +34,7 @@ public class CustomUserDetailsService implements UserDetails {
                 .stream()
                 .map(enumeration -> new SimpleGrantedAuthority(enumeration.getDescription()))
                 .collect(Collectors.toList());
+        this.isEnabled = isEnabled;
     }
 
     @Override
@@ -45,12 +48,12 @@ public class CustomUserDetailsService implements UserDetails {
     }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
+    public boolean isEnabled() {
+        return this.isEnabled;
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 

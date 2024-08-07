@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Verify Email eu que fiz</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <p th:text="'Timestamp: ' + ${timeStamp}"></p>
+    <p th:text="'Success: ' + ${Success}"></p>
+    <p th:text="'Message: ' + ${message}"></p>
+
+    <label for="login">You can enter now</label>
+    <a
+      href="http://127.0.0.1:5500/src/main/resources/templates/home.html"
+      style="text-decoration: none"
+      >Home</a
+    >
+  </body>
+</html>
