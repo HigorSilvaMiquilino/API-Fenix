@@ -42,6 +42,7 @@ public class SecurityConfig {
         public static final String[] PUBLIC_MATCHERS_POST = {
                         "/client",
                         "/login",
+                        "/promotion",
                         "/promotion/all",
                         "/reset/client/resetPassword",
                         "/reset/client/savePassword",
@@ -49,8 +50,15 @@ public class SecurityConfig {
         };
 
         public static final String[] PUBLIC_MATCHERS_GET = {
+                        "/**",
                         "/email/emailToken",
                         "/reset/client/changePassword"
+        };
+
+        public static final String[] STATIC_RESOURCES = {
+                        "/css/**",
+                        "/js/**",
+                        "/images/**"
         };
 
         @Bean
@@ -71,6 +79,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                                                 .requestMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
+                                                .requestMatchers(STATIC_RESOURCES).permitAll()
                                                 .anyRequest().authenticated())
                                 .httpBasic(withDefaults())
                                 .addFilter(new JWTAuthenticationFilterChain(authenticationManager, this.jwtUtil))

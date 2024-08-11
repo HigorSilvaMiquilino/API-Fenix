@@ -120,8 +120,9 @@ public class ClientController {
                 Path path = Paths.get(folder + imageURL.getOriginalFilename());
                 Files.write(path, bytes);
 
-                client.setImageURL("http://localhost:5500/" + path.toString());
+                client.setImageURL("/images/" + imageURL.getOriginalFilename());
                 clientService.updateProfile(client);
+                System.out.println("Saving file to: " + path.toString());
 
                 ResponseClient response = ResponseClient.builder()
                         .timeStamp(LocalDateTime.now().toString())

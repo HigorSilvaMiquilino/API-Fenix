@@ -27,13 +27,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.imageUrl) {
           document.getElementById("currentImage").src = data.imageUrl;
         } else {
-          document.getElementById("currentImage").src =
-            "http://localhost:5500/src/main/resources/static/images/default.jpg ";
+          document.getElementById("currentImage").src = "/default.jpg ";
         }
 
         if (data.imageUrl === null) {
-          document.getElementById("currentImage").src =
-            "http://localhost:5500/src/main/resources/static/images/default.jpg ";
+          document.getElementById("currentImage").src = "/default.jpg ";
         }
 
         document
@@ -75,8 +73,7 @@ document
           localStorage.setItem("userEmail", data.client.email);
           localStorage.setItem("userFirstName", data.client.firstName);
           localStorage.setItem("userLastName", data.client.lastName);
-          window.location.href =
-            "http://127.0.0.1:5500/src/main/resources/templates/home.html";
+          window.location.href = "/home";
         })
         .catch((error) => console.error("Error updating client: " + error));
     }
@@ -203,12 +200,10 @@ document.getElementById("email").addEventListener("input", function (event) {
 
 document.getElementById("homeBtn").addEventListener("click", function () {
   localStorage.setItem("userEmail", email);
-  window.location.href =
-    "http://127.0.0.1:5500/src/main/resources/templates/home.html";
+  window.location.href = "/home";
 });
 
 document.getElementById("profileBtn").addEventListener("click", function () {
   localStorage.setItem("userEmail", email);
-  window.location.href =
-    "http://127.0.0.1:5500/src/main/resources/templates/updateProfilePicture.html";
+  window.location.href = "/updateProfilePicture";
 });

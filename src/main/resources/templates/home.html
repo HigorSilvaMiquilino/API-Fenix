@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/src/main/resources/static/css/home.css" />
-    <script src="/src/main/resources/static/js/home.js" defer></script>
+    <link th:href="@{/css/home.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/home.js}" defer></script>
+
     <title>Home</title>
   </head>
+
   <body>
     <div class="container">
       <div class="card-Profile" id="cardProfile"></div>

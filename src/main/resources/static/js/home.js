@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cardProfile.innerHTML = `
             <img
             id="currentImage"
-            src=${data.imageURL}
+            src="${data.imageURL || "/default.jpg"}"
             alt="Current Profile Image"
             style="width: 250px; height: 250px"
           />
@@ -40,13 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <button id="deleteButtion">Delete Acount</button>
         `;
         container.insertAdjacentHTML("beforeend", buttons);
-
-        if (data.imageURL) {
-          document.getElementById("currentImage").src = data.imageURL;
-        } else {
-          document.getElementById("currentImage").src =
-            "http://localhost:5500/src/main/resources/static/images/default.jpg ";
-        }
 
         document
           .getElementById("promotions")
@@ -92,8 +85,7 @@ function fetchPromotion() {
 }
 
 function updateProfile() {
-  window.location.href =
-    "http://127.0.0.1:5500/src/main/resources/templates/updateProfile.html";
+  window.location.href = "/updateProfile";
 }
 
 function deleteAccount() {

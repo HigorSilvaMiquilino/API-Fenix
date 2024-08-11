@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,19 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedHeaders("*")
         .allowedMethods("GET", "POST", "PUT", "DELETE")
         .allowCredentials(true);
+  }
+
+  @Override
+  public void addResourceHandlers(@SuppressWarnings("null") ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("/css/**")
+        .addResourceLocations("classpath:/static/css/");
+
+    registry.addResourceHandler("/js/**")
+        .addResourceLocations("classpath:/static/js/");
+
+    registry.addResourceHandler("/images/**")
+        .addResourceLocations("classpath:/static/images/");
+
   }
 
   @Bean

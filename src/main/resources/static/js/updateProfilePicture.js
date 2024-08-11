@@ -44,13 +44,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.imageURL) {
           document.getElementById("currentImage").src = data.imageURL;
         } else {
-          document.getElementById("currentImage").src =
-            "http://localhost:5500/src/main/resources/static/images/default.jpg ";
+          document.getElementById("currentImage").src = "/images/default.jpg ";
         }
 
         if (data.imageURL === null) {
-          document.getElementById("currentImage").src =
-            "http://localhost:5500/src/main/resources/static/images/default.jpg ";
+          document.getElementById("currentImage").src = "/images/default.jpg ";
         }
 
         document
@@ -76,13 +74,23 @@ function updateProfilePicture(event) {
       Authorization: localStorage.getItem(key),
     }),
     body: formData,
-  }).catch((error) =>
-    console.error("Error updating profile picture: " + error)
-  );
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Success:", data.message);
+      const currentImage = document.getElementById("currentImage");
+      if (currentImage) {
+        currentImage.src = data.client.imageURL;
+      } else {
+        console.error("Current image element not found");
+      }
+    })
+    .catch((error) =>
+      console.error("Error updating profile picture: " + error)
+    );
 }
 
 function home() {
   localStorage.setItem("userEmail", email);
-  window.location.href =
-    "http://127.0.0.1:5500/src/main/resources/templates/home.html";
+  window.location.href = "/home";
 }

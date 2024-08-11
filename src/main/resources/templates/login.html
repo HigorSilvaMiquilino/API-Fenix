@@ -3,12 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/src/main/resources/static/css/login.css" rel="stylesheet" />
-    <script
-      type="text/javascript"
-      src="/src/main/resources/static/js/login.js"
-      defer
-    ></script>
+    <link th:href="@{/css/login.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/login.js}" defer></script>
 
     <title>Login</title>
   </head>
@@ -27,7 +23,7 @@
           <a
             title="Forgot Password"
             id="link-reset"
-            href="forgetPassword.html"
+            th:href="@{/forgetPassword}"
             style="text-decoration: none"
             >Forgot Password?</a
           >
@@ -36,7 +32,7 @@
         <button type="submit">Login</button>
 
         <label for="account">Doesn't hava an account? </label>
-        <a href="register.html" style="text-decoration: none">Sign Up</a>
+        <a th:href="@{/register}" style="text-decoration: none">Sign Up</a>
       </form>
     </div>
   </body>

@@ -1,0 +1,130 @@
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 0;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.navbar .navbar-brand {
+  font-size: 24px;
+  color: white;
+  text-decoration: none;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 60px); /* Adjust based on navbar height */
+  padding-top: 60px; /* To account for navbar height */
+}
+
+.register-background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.filter-black {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.register-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.form-horizontal label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: #4caf50;
+}
+
+.btn-primary:hover {
+  background-color: #45a049;
+}
+
+.btn-info {
+  background-color: #5bc0de;
+}
+
+.btn-info:hover {
+  background-color: #31b0d5;
+}
+
+.btn-warning {
+  background-color: #f0ad4e;
+}
+
+.btn-warning:hover {
+  background-color: #ec971f;
+}
+
+.havelogin,
+.forgot {
+  margin-top: 15px;
+}
+
+#responseFromBack {
+  color: black;
+}

@@ -10,8 +10,7 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
     telephone: formData.get("telephone"),
     email: formData.get("email"),
     password: formData.get("password"),
-    imageURL:
-      "http://localhost:5500/src/main/resources/static/images/default.jpg",
+    imageURL: "/images/default.jpg",
   };
 
   if (validateForm()) {
@@ -35,8 +34,8 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
         localStorage.setItem("userFirstName", data.client.firstName);
         localStorage.setItem("userLastName", data.client.lastName);
         localStorage.setItem("Authorization", token);
-        window.location.href =
-          "http://127.0.0.1:5500/src/main/resources/templates/greeting.html";
+
+        window.location.href = "/greeting";
       })
       .catch((error) => {
         console.error("Error:", error);

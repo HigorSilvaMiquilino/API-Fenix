@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/src/main/resources/static/css/register.css" />
-    <script src="/src/main/resources/static/js/register.js" defer></script>
+    <link th:href="@{/css/register.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/register.js}" defer></script>
     <title>Register</title>
   </head>
   <body>
@@ -68,7 +68,7 @@
 
         <div class="login-link">
           <label class="label-href">Already have an account ?</label>
-          <a href="login.html" style="text-decoration: none">Login</a>
+          <a th:href="@{/}" style="text-decoration: none">Login</a>
         </div>
       </form>
     </div>
