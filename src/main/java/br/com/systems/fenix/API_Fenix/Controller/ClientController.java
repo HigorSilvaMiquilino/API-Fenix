@@ -1,6 +1,7 @@
 package br.com.systems.fenix.API_Fenix.Controller;
 
 import br.com.systems.fenix.API_Fenix.Model.Client;
+
 import br.com.systems.fenix.API_Fenix.Service.ClientService;
 import br.com.systems.fenix.API_Fenix.response.ResponseClient;
 import br.com.systems.fenix.API_Fenix.security.JWTUtilities;

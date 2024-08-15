@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const buttons = `
           <button id="promotions">Promotions</button>
           <button id="updateButtion">Update Profile</button>
+          <button id="LogoutButton">Logout</button>
           <button id="deleteButtion">Delete Acount</button>
         `;
         container.insertAdjacentHTML("beforeend", buttons);
@@ -51,6 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document
           .getElementById("deleteButtion")
           .addEventListener("click", deleteAccount);
+
+        document
+          .getElementById("LogoutButton")
+          .addEventListener("click", logoutAccount);
       })
       .catch((error) => console.error("Error fetching user data", error));
   }
@@ -110,4 +115,77 @@ function deleteAccount() {
       })
       .catch((error) => console.error("Error deleting account: " + error));
   }
+}
+
+function logoutAccount() {
+  // Create the popup container
+  const logoutPopup = document.createElement("div");
+  logoutPopup.id = "logoutPopup";
+  logoutPopup.className = "popup";
+
+  // Create the popup content
+  const popupContent = document.createElement("div");
+  popupContent.className = "popup-content";
+
+  // Create the header
+  const header = document.createElement("h2");
+  header.textContent = "Are you sure you want to logout?";
+
+  // Create the buttons container
+  const popupButtons = document.createElement("div");
+  popupButtons.className = "popup-buttons";
+
+  // Create the confirm button
+  const confirmLogoutBtn = document.createElement("button");
+  confirmLogoutBtn.id = "confirmLogoutBtn";
+  confirmLogoutBtn.className = "btn confirm";
+  confirmLogoutBtn.textContent = "Yes";
+
+  // Create the cancel button
+  const cancelLogoutBtn = document.createElement("button");
+  cancelLogoutBtn.id = "cancelLogoutBtn";
+  cancelLogoutBtn.className = "btn cancel";
+  cancelLogoutBtn.textContent = "No";
+
+  // Append the buttons to the buttons container
+  popupButtons.appendChild(confirmLogoutBtn);
+  popupButtons.appendChild(cancelLogoutBtn);
+
+  // Append the header and buttons container to the popup content
+  popupContent.appendChild(header);
+  popupContent.appendChild(popupButtons);
+
+  // Append the popup content to the popup container
+  logoutPopup.appendChild(popupContent);
+
+  // Append the popup container to the body (or any other container)
+  document.body.appendChild(logoutPopup);
+
+  // Add event listeners for the buttons
+  confirmLogoutBtn.addEventListener("click", function () {
+    fetch(`http://localhost:8080/logout`, {
+      method: "POST",
+      headers: new Headers({
+        Authorization: localStorage.getItem("Authorization"),
+        "Content-Type": "application/json",
+      }),
+    })
+      .then((response) => {
+        console.log(response);
+        logoutPopup.style.display = "none";
+        // Clear the Authorization token from localStorage and redirect to login page
+        localStorage.clear();
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.error("Error during logout:", error);
+      });
+  });
+
+  cancelLogoutBtn.addEventListener("click", function () {
+    logoutPopup.style.display = "none";
+  });
+
+  // Show the popup
+  logoutPopup.style.display = "block";
 }

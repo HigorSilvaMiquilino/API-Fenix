@@ -82,6 +82,11 @@ public class SecurityConfig {
                                                 .requestMatchers(STATIC_RESOURCES).permitAll()
                                                 .anyRequest().authenticated())
                                 .httpBasic(withDefaults())
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/")
+                                                .invalidateHttpSession(true)
+                                                .clearAuthentication(true))
                                 .addFilter(new JWTAuthenticationFilterChain(authenticationManager, this.jwtUtil))
                                 .addFilter(new JWTAuthorizationFilter(authenticationManager, this.jwtUtil,
                                                 this.userDetailsServiceImpl));
