@@ -5,7 +5,7 @@ import br.com.systems.fenix.API_Fenix.Model.Client;
 import br.com.systems.fenix.API_Fenix.Service.ClientService;
 import br.com.systems.fenix.API_Fenix.response.ResponseClient;
 import br.com.systems.fenix.API_Fenix.security.JWTUtilities;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -66,8 +66,9 @@ public class ClientController {
 
     @PostMapping
     @Validated
-    public ResponseEntity<ResponseClient> crete(@RequestBody Client client, HttpServletRequest request, Errors errors) {
-        this.clientService.save(client);
+    public ResponseEntity<ResponseClient> crete(@RequestBody Client client, HttpServletResponse servletResponse,
+            Errors errors) {
+        Client clientSaved = this.clientService.save(client);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(client.getId()).toUri();
         ResponseClient response = ResponseClient.builder()
@@ -79,6 +80,7 @@ public class ClientController {
                 .build();
 
         String token = "Bearer " + this.jwtUtilities.generateToken(client.getEmail());
+        servletResponse.addCookie(this.clientService.creatCookie(clientSaved, token));
 
         return ResponseEntity.created(uri).header("Authorization", token).body(response);
     }

@@ -1,15 +1,32 @@
 let id;
 let email;
-let key = "Authorization";
+let authorization;
 
 document.addEventListener("DOMContentLoaded", function () {
-  email = localStorage.getItem("userEmail");
+  let allCookieNames = getAllCookieNames();
+  let firstCokieName = allCookieNames[0];
+  let userInfoCookie = getCookie(firstCokieName);
+  if (userInfoCookie) {
+    try {
+      let decodedValue = decodeURIComponent(userInfoCookie);
+      let userInfo = JSON.parse(decodedValue);
+
+      console.log("User Email:", userInfo.email);
+      email = userInfo.email;
+      console.log("Authorization:", userInfo.Authorization);
+      authorization = userInfo.Authorization;
+    } catch (e) {
+      console.error("Error parsing JSON from cookie:", e);
+    }
+  } else {
+    console.log("User info cookie not found!");
+  }
 
   if (email) {
     fetch(`http://localhost:8080/client/email/${email}`, {
       method: "GET",
       headers: new Headers({
-        Authorization: localStorage.getItem(key),
+        Authorization: authorization,
         "Content-Type": "application/json",
       }),
     })
@@ -71,7 +88,7 @@ function updateProfilePicture(event) {
   fetch(`http://localhost:8080/client/${id}/profile`, {
     method: "PUT",
     headers: new Headers({
-      Authorization: localStorage.getItem(key),
+      Authorization: authorization,
     }),
     body: formData,
   })
@@ -91,6 +108,56 @@ function updateProfilePicture(event) {
 }
 
 function home() {
-  localStorage.setItem("userEmail", email);
+  const userInfo = {
+    email: email,
+    Authorization: authorization,
+  };
+
+  const jsonValue = encodeURIComponent(JSON.stringify(userInfo));
+
+  setCookie("userInfo", jsonValue, 7);
   window.location.href = "/home";
+}
+
+function getCookie(name) {
+  let matches = document.cookie.match(
+    new RegExp(
+      "(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"
+    )
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+let userInfoCookie = getCookie("userInfo");
+
+if (userInfoCookie) {
+  let decodedValue = decodeURIComponent(userInfoCookie);
+  let userInfo = JSON.parse(decodedValue);
+
+  console.log("User Email:", userInfo.userEmail);
+  console.log("Authorization:", userInfo.Authorization);
+} else {
+  console.log("User info cookie not found!");
+}
+
+function getAllCookieNames() {
+  let cookies = document.cookie.split(";");
+  let cookieNames = [];
+
+  cookies.forEach((cookie) => {
+    let name = cookie.split("=")[0].trim();
+    cookieNames.push(name);
+  });
+
+  return cookieNames;
+}
+
+function setCookie(name, value, hours) {
+  let expires = "";
+  if (hours) {
+    const date = new Date();
+    date.setTime(date.getTime() + hours * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }

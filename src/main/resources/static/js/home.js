@@ -1,20 +1,39 @@
 let idClient;
+let email;
+let authorization;
 
 document.addEventListener("DOMContentLoaded", () => {
-  const email = localStorage.getItem("userEmail");
-  const firstName = localStorage.getItem("userFirstName");
-  const lastName = localStorage.getItem("userLastName");
+  let allCookieNames = getAllCookieNames();
+  let firstCokieName = allCookieNames[0];
+  let userInfoCookie = getCookie(firstCokieName);
+  if (userInfoCookie) {
+    try {
+      let decodedValue = decodeURIComponent(userInfoCookie);
+
+      let userInfo = JSON.parse(decodedValue);
+
+      console.log("User Email:", userInfo.email);
+      email = userInfo.email;
+      console.log("Authorization:", userInfo.Authorization);
+      authorization = userInfo.Authorization;
+    } catch (e) {
+      console.error("Error parsing JSON from cookie:", e);
+    }
+  } else {
+    console.log("User info cookie not found!");
+  }
 
   if (email) {
     fetch(`http://localhost:8080/client/email/${email}`, {
       method: "GET",
       headers: new Headers({
-        Authorization: localStorage.getItem("Authorization"),
+        Authorization: authorization,
         "Content-Type": "application/json",
       }),
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         const container = document.getElementById("cardProfile");
         idClient = data.id;
 
@@ -62,10 +81,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function fetchPromotion() {
+  console.log(authorization);
   fetch("http://localhost:8080/promotion/all", {
     method: "GET",
     headers: new Headers({
-      Authorization: localStorage.getItem("Authorization"),
+      Authorization: authorization,
       "Content-Type": "application/json",
     }),
   })
@@ -98,7 +118,7 @@ function deleteAccount() {
     fetch(`http://localhost:8080/client/${idClient}`, {
       method: "DELETE",
       headers: new Headers({
-        Authorization: localStorage.getItem("Authorization"),
+        Authorization: authorization,
         "Content-Type": "application/json",
       }),
     })
@@ -118,63 +138,51 @@ function deleteAccount() {
 }
 
 function logoutAccount() {
-  // Create the popup container
   const logoutPopup = document.createElement("div");
   logoutPopup.id = "logoutPopup";
   logoutPopup.className = "popup";
 
-  // Create the popup content
   const popupContent = document.createElement("div");
   popupContent.className = "popup-content";
 
-  // Create the header
   const header = document.createElement("h2");
   header.textContent = "Are you sure you want to logout?";
 
-  // Create the buttons container
   const popupButtons = document.createElement("div");
   popupButtons.className = "popup-buttons";
 
-  // Create the confirm button
   const confirmLogoutBtn = document.createElement("button");
   confirmLogoutBtn.id = "confirmLogoutBtn";
   confirmLogoutBtn.className = "btn confirm";
   confirmLogoutBtn.textContent = "Yes";
 
-  // Create the cancel button
   const cancelLogoutBtn = document.createElement("button");
   cancelLogoutBtn.id = "cancelLogoutBtn";
   cancelLogoutBtn.className = "btn cancel";
   cancelLogoutBtn.textContent = "No";
 
-  // Append the buttons to the buttons container
   popupButtons.appendChild(confirmLogoutBtn);
   popupButtons.appendChild(cancelLogoutBtn);
 
-  // Append the header and buttons container to the popup content
   popupContent.appendChild(header);
   popupContent.appendChild(popupButtons);
 
-  // Append the popup content to the popup container
   logoutPopup.appendChild(popupContent);
 
-  // Append the popup container to the body (or any other container)
   document.body.appendChild(logoutPopup);
 
-  // Add event listeners for the buttons
   confirmLogoutBtn.addEventListener("click", function () {
     fetch(`http://localhost:8080/logout`, {
       method: "POST",
       headers: new Headers({
-        Authorization: localStorage.getItem("Authorization"),
+        Authorization: authorization,
         "Content-Type": "application/json",
       }),
     })
       .then((response) => {
         console.log(response);
         logoutPopup.style.display = "none";
-        // Clear the Authorization token from localStorage and redirect to login page
-        localStorage.clear();
+        deleteAllCookies();
         window.location.href = "/";
       })
       .catch((error) => {
@@ -186,6 +194,59 @@ function logoutAccount() {
     logoutPopup.style.display = "none";
   });
 
-  // Show the popup
   logoutPopup.style.display = "block";
+}
+
+function getCookie(name) {
+  let matches = document.cookie.match(
+    new RegExp(
+      "(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"
+    )
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+let userInfoCookie = getCookie("userInfo");
+
+if (userInfoCookie) {
+  let decodedValue = decodeURIComponent(userInfoCookie);
+
+  let userInfo = JSON.parse(decodedValue);
+
+  console.log("User Email:", userInfo.userEmail);
+  console.log("Authorization:", userInfo.Authorization);
+} else {
+  console.log("User info cookie not found!");
+}
+
+function getAllCookieNames() {
+  let cookies = document.cookie.split(";");
+  let cookieNames = [];
+
+  cookies.forEach((cookie) => {
+    let name = cookie.split("=")[0].trim();
+    cookieNames.push(name);
+  });
+
+  return cookieNames;
+}
+
+function setCookie(name, value, hours) {
+  let expires = "";
+  if (hours) {
+    const date = new Date();
+    date.setTime(date.getTime() + hours * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function deleteAllCookies() {
+  const cookies = document.cookie.split(";");
+
+  cookies.forEach((eachCookies) => {
+    const cookie = eachCookies.indexOf("=");
+    const name = cookie > -1 ? cookie.substr(0, eqPos) : cookie;
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+  });
 }

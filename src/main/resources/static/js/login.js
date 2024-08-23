@@ -27,8 +27,14 @@ document
         return token;
       })
       .then((token) => {
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("Authorization", token);
+        const userInfo = {
+          email: email,
+          Authorization: token,
+        };
+
+        const jsonValue = encodeURIComponent(JSON.stringify(userInfo));
+        setCookie("userInfo", jsonValue, 7);
+
         window.location.href = "/home";
       })
       .catch((error) => {
@@ -36,3 +42,47 @@ document
         alert(error.message || "Invalid credentials. Please try again.");
       });
   });
+
+function getCookie(name) {
+  let matches = document.cookie.match(
+    new RegExp(
+      "(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"
+    )
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+let userInfoCookie = getCookie("userInfo");
+
+if (userInfoCookie) {
+  let decodedValue = decodeURIComponent(userInfoCookie);
+
+  let userInfo = JSON.parse(decodedValue);
+
+  console.log("User Email:", userInfo.userEmail);
+  console.log("Authorization:", userInfo.Authorization);
+} else {
+  console.log("User info cookie not found!");
+}
+
+function getAllCookieNames() {
+  let cookies = document.cookie.split(";");
+  let cookieNames = [];
+
+  cookies.forEach((cookie) => {
+    let name = cookie.split("=")[0].trim();
+    cookieNames.push(name);
+  });
+
+  return cookieNames;
+}
+
+function setCookie(name, value, hours) {
+  let expires = "";
+  if (hours) {
+    const date = new Date();
+    date.setTime(date.getTime() + hours * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}

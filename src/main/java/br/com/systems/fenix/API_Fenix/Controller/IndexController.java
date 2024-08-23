@@ -1,15 +1,43 @@
 package br.com.systems.fenix.API_Fenix.Controller;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.ui.Model;
 
 @Controller
 @RequestMapping("/")
 public class IndexController {
 
     @GetMapping()
-    public String showLogin() {
+    public String showLogin(Model model,
+            @CookieValue(value = "userInfo", required = false, defaultValue = "") String userInfoCookie) {
+        try {
+            if (!userInfoCookie.isEmpty()) {
+                String decodeValue = URLDecoder.decode(userInfoCookie, StandardCharsets.UTF_8.toString());
+                ObjectMapper objectMapper = new ObjectMapper();
+                @SuppressWarnings("unchecked")
+                Map<String, String> userInfoMap = objectMapper.readValue(decodeValue, Map.class);
+                String userEmail = userInfoMap.get("userEmail");
+                model.addAttribute("userEmail", userEmail != null ? userEmail : "Guest");
+
+            } else {
+                model.addAttribute("userEmail", "Guest");
+            }
+            return "login";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("userEmail", "Guest");
+
+        }
+
         return "login";
     }
 

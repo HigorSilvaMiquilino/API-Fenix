@@ -14,6 +14,7 @@ import br.com.systems.fenix.API_Fenix.exception.ClientIdNotFoundException;
 import br.com.systems.fenix.API_Fenix.exception.ClientNameNotFoundException;
 import br.com.systems.fenix.API_Fenix.exception.ClientsNotFoundException;
 import br.com.systems.fenix.API_Fenix.security.CustomUserDetailsService;
+import jakarta.servlet.http.Cookie;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -121,6 +130,31 @@ public class ClientService {
     public void changeClientPassword(Client client, String password) {
         client.setPassword(this.passwordEncoder.encode(password));
         this.clientRepository.save(client);
+    }
+
+    public Cookie creatCookie(Client client, String authorization) {
+
+        Map<Object, Object> keyValuePairs = new HashMap<>();
+        keyValuePairs.put("userEmail", client.getEmail());
+        keyValuePairs.put("Authorization", authorization);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonValue;
+        Cookie theCokie;
+        try {
+            jsonValue = objectMapper.writeValueAsString(keyValuePairs);
+            String safeValue = URLEncoder.encode(jsonValue, StandardCharsets.UTF_8.toString());
+            System.out.println("#*¨&*&#$" + safeValue + "!@#$%%@$%¨#$@");
+            theCokie = new Cookie("userInfo", safeValue);
+            theCokie.setMaxAge(60 * 60 * 24);
+            return theCokie;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Transactional
