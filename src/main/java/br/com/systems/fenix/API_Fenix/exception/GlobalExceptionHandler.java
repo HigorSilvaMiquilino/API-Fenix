@@ -180,6 +180,42 @@ public class GlobalExceptionHandler implements AuthenticationFailureHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
   }
 
+  @ExceptionHandler(CouponIdNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleCouponIdNotFoundException(CouponIdNotFoundException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage() + "Id: " + ex.getId(), null,
+        request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(CouponCNPJNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleCouponCNPJNotFoundException(CouponCNPJNotFoundException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getCNPJ(), request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(CouponNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleCouponNotFoundException(CouponNotFoundException ex, WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null, request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(CouponNumberNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleCouponNumberNotFoundException(CouponNumberNotFoundException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getCouponNumber(),
+        request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(CouponClientNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleCouponClientNotFoundException(CouponClientNotFoundException ex,
+      WebRequest request) {
+    ErrorResponse errorResponse = creatErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null, request, ex);
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  }
+
   @Override
   public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
       AuthenticationException exception) throws IOException, ServletException {

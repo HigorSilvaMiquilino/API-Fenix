@@ -105,7 +105,6 @@ public class ClientService {
                     .password(this.passwordEncoder.encode(client.getPassword()))
                     .profiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()))
                     .imageURL(client.getImageURL())
-                    .promotions(client.getPromotions())
                     .isEnabled(false)
                     .build();
             this.clientRepository.save(clientBuilt);
@@ -169,7 +168,6 @@ public class ClientService {
                     .password(this.passwordEncoder.encode(client.getPassword()))
                     .profiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()))
                     .imageURL(client.getImageURL())
-                    .promotions(client.getPromotions())
                     .build();
             this.clientRepository.save(ClientsBuilt);
         }

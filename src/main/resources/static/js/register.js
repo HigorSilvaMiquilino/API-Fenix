@@ -28,6 +28,7 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
       })
       .then(({ data, token }) => {
         alert(data.message);
+
         const userInfo = {
           email: data.client.email,
           Authorization: token,

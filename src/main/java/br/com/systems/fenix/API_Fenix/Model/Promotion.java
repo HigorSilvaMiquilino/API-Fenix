@@ -34,10 +34,6 @@ public class Promotion {
     @Column(name = "imageUrl")
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private Client client;
-
     @OneToMany(mappedBy = "promotion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
 

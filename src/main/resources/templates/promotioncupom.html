@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link th:href="@{/css/promotion.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/promotion.js}" defer></script>
+    <title>Register</title>
+  </head>
+  <body>
+    <div class="form-container">
+      <h1 id="h1"></h1>
+      <form id="apiCouponForm">
+        <div class="input-group">
+          <div>
+            <img
+              id="currentImage"
+              src=""
+              alt="Current Profile Image"
+              style="width: 250px; height: 250px"
+            />
+          </div>
+          <label for="CNPJLabel">CNPJ:</label>
+          <input
+            type="text"
+            id="CNPJ"
+            name="CNPJ"
+            placeholder="Establishment's cnpj
+            "
+          />
+          <span id="CNPJFeedback" style="color: red"></span>
+
+          <label for="couponNumberLabel">Coupon Number:</label>
+          <input
+            type="text"
+            id="number"
+            name="number"
+            placeholder="Enter the coupon number"
+          />
+          <span id="couponNumberFeedback" style="color: red"></span>
+
+          <label for="dateOfPurchaseLabel">Date Of Purchase:</label>
+          <input type="date" id="dateOfPurchase" name="dateOfPurchase" />
+          <span id="dateOfPurchaseFeedback" style="color: red"></span>
+        </div>
+
+        <div class="button-group">
+          <button type="submit">Save</button>
+        </div>
+
+        <div class="login-link">
+          <a th:href="@{/home}" style="text-decoration: none">Home</a>
+        </div>
+      </form>
+    </div>
+    <div id="response"></div>
+  </body>
+</html>

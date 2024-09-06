@@ -25,7 +25,7 @@ public class IndexController {
                 ObjectMapper objectMapper = new ObjectMapper();
                 @SuppressWarnings("unchecked")
                 Map<String, String> userInfoMap = objectMapper.readValue(decodeValue, Map.class);
-                String userEmail = userInfoMap.get("userEmail");
+                String userEmail = userInfoMap.get("email");
                 model.addAttribute("userEmail", userEmail != null ? userEmail : "Guest");
 
             } else {
@@ -75,4 +75,10 @@ public class IndexController {
     public String showUpdateProfilePicture() {
         return "updateProfilePicture";
     }
+
+    @GetMapping("promotioncupom")
+    public String showPromotionCupom() {
+        return "promotioncupom";
+    }
+
 }

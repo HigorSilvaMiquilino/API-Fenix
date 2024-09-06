@@ -12,9 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let userInfo = JSON.parse(decodedValue);
 
-      console.log("User Email:", userInfo.email);
       email = userInfo.email;
-      console.log("Authorization:", userInfo.Authorization);
       authorization = userInfo.Authorization;
     } catch (e) {
       console.error("Error parsing JSON from cookie:", e);
@@ -33,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const container = document.getElementById("cardProfile");
         idClient = data.id;
 
@@ -81,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function fetchPromotion() {
-  console.log(authorization);
   fetch("http://localhost:8080/promotion/all", {
     method: "GET",
     headers: new Headers({
@@ -92,8 +88,9 @@ function fetchPromotion() {
     .then((response) => response.json())
     .then((data) => {
       const container = document.getElementById("cardsContainer");
+      container.innerHTML = "";
 
-      data.forEach((promotion) => {
+      data.forEach((promotion, index) => {
         const card = document.createElement("div");
         card.className = "cardArry";
         card.innerHTML = `
@@ -101,9 +98,24 @@ function fetchPromotion() {
           <h2>${promotion.promotionName}</h2>
           <p>${promotion.description}</p>
           <p>Prize $R: ${promotion.prize}</p>
-          <button>Participate</button>
+          <button class="participateButton"  data-id="${promotion.id}" data-index="${index}">Participate</button>
         `;
         container.appendChild(card);
+      });
+
+      const buttons = document.querySelectorAll(".participateButton");
+      buttons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const userPromotionInfo = {
+            email: email,
+            promotionId: this.getAttribute("data-id"),
+          };
+          const jsonValue = encodeURIComponent(
+            JSON.stringify(userPromotionInfo)
+          );
+          setCookie("userPromotionInfo", jsonValue, 7);
+          window.location.href = "/promotioncupom";
+        });
       });
     })
     .catch((error) => console.error("Error fetching promotions:", error));
@@ -212,9 +224,6 @@ if (userInfoCookie) {
   let decodedValue = decodeURIComponent(userInfoCookie);
 
   let userInfo = JSON.parse(decodedValue);
-
-  console.log("User Email:", userInfo.userEmail);
-  console.log("Authorization:", userInfo.Authorization);
 } else {
   console.log("User info cookie not found!");
 }
@@ -235,7 +244,7 @@ function setCookie(name, value, hours) {
   let expires = "";
   if (hours) {
     const date = new Date();
-    date.setTime(date.getTime() + hours * 60 * 1000);
+    date.setTime(date.getTime() + hours * 60 * 10000);
     expires = "; expires=" + date.toUTCString();
   }
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
@@ -243,10 +252,9 @@ function setCookie(name, value, hours) {
 
 function deleteAllCookies() {
   const cookies = document.cookie.split(";");
-
-  cookies.forEach((eachCookies) => {
-    const cookie = eachCookies.indexOf("=");
-    const name = cookie > -1 ? cookie.substr(0, eqPos) : cookie;
+  cookies.forEach((cookie) => {
+    const eqPos = cookie.indexOf("=");
+    const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
     document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
   });
 }

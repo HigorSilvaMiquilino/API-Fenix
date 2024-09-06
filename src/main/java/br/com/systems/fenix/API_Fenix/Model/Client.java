@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,9 +58,6 @@ public class Client {
 
     @Column(nullable = false)
     private boolean isEnabled;
-
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Promotion> promotions;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

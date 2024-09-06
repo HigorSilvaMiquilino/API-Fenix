@@ -38,7 +38,6 @@ public class PromotionService {
                 .description(promotion.getDescription())
                 .prize(promotion.getPrize())
                 .imageUrl(promotion.getImageUrl())
-                .client(promotion.getClient())
                 .build();
         this.promotionRepository.save(promotionBuilt);
         return promotionBuilt;
@@ -52,7 +51,6 @@ public class PromotionService {
                     .description(promotion.getDescription())
                     .prize(promotion.getPrize())
                     .imageUrl(promotion.getImageUrl())
-                    .client(promotion.getClient())
                     .build();
             this.promotionRepository.save(promotionBuilt);
         }
@@ -68,7 +66,6 @@ public class PromotionService {
                 existingPromotion.setDescription(promotion.getDescription());
                 existingPromotion.setPrize(promotion.getPrize());
                 existingPromotion.setImageUrl(promotion.getImageUrl());
-                existingPromotion.setClient(promotion.getClient());
                 Promotion promotionUpdated = promotionRepository.save(existingPromotion);
                 return Optional.of(promotionUpdated);
             } else {
