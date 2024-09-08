@@ -150,7 +150,6 @@ public class ClientService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

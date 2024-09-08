@@ -1,6 +1,7 @@
 let idClient;
 let email;
 let authorization;
+let promotionIdByCoupon;
 
 document.addEventListener("DOMContentLoaded", () => {
   let allCookieNames = getAllCookieNames();
@@ -52,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const buttons = `
           <button id="promotions">Promotions</button>
+          <button id="myPromotions">My Promotions</button>
           <button id="updateButtion">Update Profile</button>
           <button id="LogoutButton">Logout</button>
           <button id="deleteButtion">Delete Acount</button>
@@ -72,6 +74,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document
           .getElementById("LogoutButton")
           .addEventListener("click", logoutAccount);
+
+        document
+          .getElementById("myPromotions")
+          .addEventListener("click", fetchMyPromotions);
       })
       .catch((error) => console.error("Error fetching user data", error));
   }
@@ -92,6 +98,9 @@ function fetchPromotion() {
 
       data.forEach((promotion, index) => {
         const card = document.createElement("div");
+
+        console.log("let me check something: " + promotionIdByCoupon);
+
         card.className = "cardArry";
         card.innerHTML = `
           <img src="${promotion.imageUrl}" alt="${promotion.promotionName}">
@@ -116,6 +125,49 @@ function fetchPromotion() {
           setCookie("userPromotionInfo", jsonValue, 7);
           window.location.href = "/promotioncupom";
         });
+      });
+    })
+    .catch((error) => console.error("Error fetching promotions:", error));
+}
+
+function fetchMyPromotions() {
+  fetch(`http://localhost:8080/coupon/CouponClient/${idClient}`, {
+    method: "GET",
+    headers: new Headers({
+      Authorization: authorization,
+      "Content-Type": "application/json",
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const container = document.getElementById("cardsContainer");
+      container.innerHTML = "";
+      console.log(data);
+      data.forEach((promotionIdByCoupon) => {
+        console.log(promotionIdByCoupon.promotionId);
+        fetch(
+          `http://localhost:8080/promotion/${promotionIdByCoupon.promotionId}`,
+          {
+            method: "GET",
+            headers: new Headers({
+              Authorization: authorization,
+              "Content-Type": "application/json",
+            }),
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const card = document.createElement("div");
+            card.className = "cardArry";
+            card.innerHTML = `
+              <img src="${data.imageUrl}" alt="${data.promotionName}">
+              <h2>${data.promotionName}</h2>
+              <p>${data.description}</p>
+              <p>Prize $R: ${data.prize}</p>
+            `;
+            container.appendChild(card);
+          })
+          .catch((error) => console.error("Error fetching promotions:", error));
       });
     })
     .catch((error) => console.error("Error fetching promotions:", error));

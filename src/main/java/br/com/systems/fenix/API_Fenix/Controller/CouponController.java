@@ -75,7 +75,7 @@ public class CouponController {
                 .timeStamp(LocalDateTime.now().toString())
                 .statusCode(HttpStatus.CREATED.value())
                 .status(HttpStatus.CREATED)
-                .message("Coupon created successfully")
+                .message("Coupon saved successfully")
                 .coupon(couponSaved)
                 .build();
         return ResponseEntity.created(uri).body(responseCoupon);
