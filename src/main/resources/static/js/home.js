@@ -2,6 +2,7 @@ let idClient;
 let email;
 let authorization;
 let promotionIdByCoupon;
+let promotionTakenId = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   let allCookieNames = getAllCookieNames();
@@ -83,51 +84,57 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function fetchPromotion() {
-  fetch("http://localhost:8080/promotion/all", {
-    method: "GET",
-    headers: new Headers({
-      Authorization: authorization,
-      "Content-Type": "application/json",
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const container = document.getElementById("cardsContainer");
-      container.innerHTML = "";
+async function fetchPromotion() {
+  try {
+    const response = await fetch("http://localhost:8080/promotion/all", {
+      method: "GET",
+      headers: new Headers({
+        Authorization: authorization,
+        "Content-Type": "application/json",
+      }),
+    });
+    const data = await response.json();
 
-      data.forEach((promotion, index) => {
-        const card = document.createElement("div");
+    const container = document.getElementById("cardsContainer");
+    container.innerHTML = "";
 
-        console.log("let me check something: " + promotionIdByCoupon);
+    const takenPromotions = await fetchPromotionAlreadyTaken();
 
-        card.className = "cardArry";
-        card.innerHTML = `
-          <img src="${promotion.imageUrl}" alt="${promotion.promotionName}">
-          <h2>${promotion.promotionName}</h2>
-          <p>${promotion.description}</p>
-          <p>Prize $R: ${promotion.prize}</p>
-          <button class="participateButton"  data-id="${promotion.id}" data-index="${index}">Participate</button>
-        `;
-        container.appendChild(card);
+    data.forEach((promotion, index) => {
+      if (takenPromotions.some((takenId) => takenId === promotion.id)) {
+        console.log(
+          `Skipping promotion with ID: ${promotion.id}, witch is ${promotion.promotionName}`
+        );
+        return;
+      }
+
+      const card = document.createElement("div");
+      card.className = "cardArry";
+      card.innerHTML = `
+        <img src="${promotion.imageUrl}" alt="${promotion.promotionName}">
+        <h2>${promotion.promotionName}</h2>
+        <p>${promotion.description}</p>
+        <p>Prize $R: ${promotion.prize}</p>
+        <button class="participateButton" data-id="${promotion.id}" data-index="${index}">Participate</button>
+      `;
+      container.appendChild(card);
+    });
+
+    const buttons = document.querySelectorAll(".participateButton");
+    buttons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const userPromotionInfo = {
+          email: email,
+          promotionId: this.getAttribute("data-id"),
+        };
+        const jsonValue = encodeURIComponent(JSON.stringify(userPromotionInfo));
+        setCookie("userPromotionInfo", jsonValue, 7);
+        window.location.href = "/promotioncupom";
       });
-
-      const buttons = document.querySelectorAll(".participateButton");
-      buttons.forEach((button) => {
-        button.addEventListener("click", function () {
-          const userPromotionInfo = {
-            email: email,
-            promotionId: this.getAttribute("data-id"),
-          };
-          const jsonValue = encodeURIComponent(
-            JSON.stringify(userPromotionInfo)
-          );
-          setCookie("userPromotionInfo", jsonValue, 7);
-          window.location.href = "/promotioncupom";
-        });
-      });
-    })
-    .catch((error) => console.error("Error fetching promotions:", error));
+    });
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+  }
 }
 
 function fetchMyPromotions() {
@@ -142,9 +149,8 @@ function fetchMyPromotions() {
     .then((data) => {
       const container = document.getElementById("cardsContainer");
       container.innerHTML = "";
-      console.log(data);
+
       data.forEach((promotionIdByCoupon) => {
-        console.log(promotionIdByCoupon.promotionId);
         fetch(
           `http://localhost:8080/promotion/${promotionIdByCoupon.promotionId}`,
           {
@@ -171,6 +177,27 @@ function fetchMyPromotions() {
       });
     })
     .catch((error) => console.error("Error fetching promotions:", error));
+}
+
+async function fetchPromotionAlreadyTaken() {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/coupon/CouponClient/${idClient}`,
+      {
+        method: "GET",
+        headers: new Headers({
+          Authorization: authorization,
+          "Content-Type": "application/json",
+        }),
+      }
+    );
+    const data = await response.json();
+    promotionTakenId = data.map((element) => element.promotionId);
+    return promotionTakenId;
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+    return [];
+  }
 }
 
 function updateProfile() {
@@ -244,7 +271,6 @@ function logoutAccount() {
       }),
     })
       .then((response) => {
-        console.log(response);
         logoutPopup.style.display = "none";
         deleteAllCookies();
         window.location.href = "/";
