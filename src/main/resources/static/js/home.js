@@ -5,9 +5,7 @@ let promotionIdByCoupon;
 let promotionTakenId = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  let allCookieNames = getAllCookieNames();
-  let firstCokieName = allCookieNames[0];
-  let userInfoCookie = getCookie(firstCokieName);
+  let userInfoCookie = getCookie("userInfo");
   if (userInfoCookie) {
     try {
       let decodedValue = decodeURIComponent(userInfoCookie);
@@ -16,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       email = userInfo.email;
       authorization = userInfo.Authorization;
-      console.log(authorization);
     } catch (e) {
       console.error("Error parsing JSON from cookie:", e);
     }
@@ -103,9 +100,6 @@ async function fetchPromotion() {
 
     data.forEach((promotion, index) => {
       if (takenPromotions.some((takenId) => takenId === promotion.id)) {
-        console.log(
-          `Skipping promotion with ID: ${promotion.id}, witch is ${promotion.promotionName}`
-        );
         return;
       }
 

@@ -192,9 +192,6 @@ let userInfoCookie = getCookie("userInfo");
 if (userInfoCookie) {
   let decodedValue = decodeURIComponent(userInfoCookie);
   let userInfo = JSON.parse(decodedValue);
-
-  console.log("User Email:", userInfo.userEmail);
-  console.log("Authorization:", userInfo.Authorization);
 } else {
   console.log("User info cookie not found!");
 }

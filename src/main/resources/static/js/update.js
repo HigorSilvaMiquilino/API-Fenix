@@ -5,18 +5,14 @@ let email;
 let authorization;
 
 document.addEventListener("DOMContentLoaded", function () {
-  let allCookieNames = getAllCookieNames();
-  let firstCokieName = allCookieNames[0];
-  let userInfoCookie = getCookie(firstCokieName);
+  let userInfoCookie = getCookie("userInfo");
   if (userInfoCookie) {
     try {
       let decodedValue = decodeURIComponent(userInfoCookie);
       let userInfo = JSON.parse(decodedValue);
 
-      // Log email and authorization values
-      console.log("User Email:", userInfo.email);
       email = userInfo.email;
-      console.log("Authorization:", userInfo.Authorization);
+
       authorization = userInfo.Authorization;
     } catch (e) {
       console.error("Error parsing JSON from cookie:", e);
@@ -43,15 +39,13 @@ document.addEventListener("DOMContentLoaded", function () {
         password = data.password;
         id = data.id;
 
-        if (data.imageUrl) {
-          document.getElementById("currentImage").src = data.imageUrl;
-        } else {
-          document.getElementById("currentImage").src = "/default.jpg ";
-        }
+        const userIDInfo = {
+          idClient: id,
+        };
 
-        if (data.imageUrl === null) {
-          document.getElementById("currentImage").src = "/default.jpg ";
-        }
+        const jsonValue = encodeURIComponent(JSON.stringify(userIDInfo));
+
+        setCookie("userIDInfo", jsonValue, 7);
 
         document
           .getElementById("formProfile")
@@ -93,7 +87,7 @@ document
             email: data.client.email,
             firstName: data.client.firstName,
             lastName: data.client.lastName,
-            Authorization: token,
+            Authorization: authorization,
           };
 
           const jsonValue = encodeURIComponent(JSON.stringify(userInfo));
@@ -228,6 +222,10 @@ document.getElementById("homeBtn").addEventListener("click", function () {
   window.location.href = "/home";
 });
 
+document.getElementById("passwordeBtn").addEventListener("click", function () {
+  window.location.href = "/changePassword";
+});
+
 document.getElementById("profileBtn").addEventListener("click", function () {
   window.location.href = "/updateProfilePicture";
 });
@@ -246,9 +244,6 @@ let userInfoCookie = getCookie("userInfo");
 if (userInfoCookie) {
   let decodedValue = decodeURIComponent(userInfoCookie);
   let userInfo = JSON.parse(decodedValue);
-
-  console.log("User Email:", userInfo.userEmail);
-  console.log("Authorization:", userInfo.Authorization);
 } else {
   console.log("User info cookie not found!");
 }

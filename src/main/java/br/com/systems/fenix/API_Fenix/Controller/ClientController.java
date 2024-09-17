@@ -1,8 +1,10 @@
 package br.com.systems.fenix.API_Fenix.Controller;
 
+import br.com.systems.fenix.API_Fenix.DTO.ChangePasswordDTO;
 import br.com.systems.fenix.API_Fenix.Model.Client;
 
 import br.com.systems.fenix.API_Fenix.Service.ClientService;
+import br.com.systems.fenix.API_Fenix.response.HttpResponse;
 import br.com.systems.fenix.API_Fenix.response.ResponseClient;
 import br.com.systems.fenix.API_Fenix.security.JWTUtilities;
 import jakarta.servlet.http.HttpServletResponse;
@@ -95,14 +97,36 @@ public class ClientController {
     @PutMapping("/{id}")
     @Validated
     public ResponseEntity<ResponseClient> update(@PathVariable Long id, @RequestBody Client client) {
+
         client.setId(id);
         this.clientService.update(client);
+
         ResponseClient response = ResponseClient.builder()
                 .timeStamp(LocalDateTime.now().toString())
                 .statusCode(HttpStatus.OK.value())
                 .status(HttpStatus.OK)
                 .message("Client updated successfully")
                 .client(client)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/changePassword")
+    @Validated
+    public ResponseEntity<HttpResponse> changePassword(@RequestBody ChangePasswordDTO clientDTO) {
+
+        Long id = clientDTO.getId();
+
+        Client client = this.clientService.findById(id);
+
+        this.clientService.changeClientPassword(client, clientDTO.getPassword());
+
+        HttpResponse response = HttpResponse.builder()
+                .timeStamp(LocalDateTime.now().toString())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
+                .message("password updated successfully")
                 .build();
 
         return ResponseEntity.ok(response);

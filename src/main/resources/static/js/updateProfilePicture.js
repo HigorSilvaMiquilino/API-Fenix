@@ -3,17 +3,13 @@ let email;
 let authorization;
 
 document.addEventListener("DOMContentLoaded", function () {
-  let allCookieNames = getAllCookieNames();
-  let firstCokieName = allCookieNames[0];
-  let userInfoCookie = getCookie(firstCokieName);
+  let userInfoCookie = getCookie("userInfo");
   if (userInfoCookie) {
     try {
       let decodedValue = decodeURIComponent(userInfoCookie);
       let userInfo = JSON.parse(decodedValue);
 
-      console.log("User Email:", userInfo.email);
       email = userInfo.email;
-      console.log("Authorization:", userInfo.Authorization);
       authorization = userInfo.Authorization;
     } catch (e) {
       console.error("Error parsing JSON from cookie:", e);
@@ -133,9 +129,6 @@ let userInfoCookie = getCookie("userInfo");
 if (userInfoCookie) {
   let decodedValue = decodeURIComponent(userInfoCookie);
   let userInfo = JSON.parse(decodedValue);
-
-  console.log("User Email:", userInfo.userEmail);
-  console.log("Authorization:", userInfo.Authorization);
 } else {
   console.log("User info cookie not found!");
 }

@@ -81,4 +81,9 @@ public class IndexController {
         return "promotioncupom";
     }
 
+    @GetMapping("changePassword")
+    public String showChangePassword() {
+        return "changePassword";
+    }
+
 }

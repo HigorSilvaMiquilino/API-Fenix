@@ -147,7 +147,6 @@ public class ClientService {
         try {
             jsonValue = objectMapper.writeValueAsString(keyValuePairs);
             String safeValue = URLEncoder.encode(jsonValue, StandardCharsets.UTF_8.toString());
-            System.out.println("#*¨&*&#$" + safeValue + "!@#$%%@$%¨#$@");
             theCokie = new Cookie("userInfo", safeValue);
             theCokie.setMaxAge(60 * 60 * 24);
             return theCokie;

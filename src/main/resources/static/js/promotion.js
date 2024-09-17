@@ -4,16 +4,14 @@ let id;
 let authorization;
 document.addEventListener("DOMContentLoaded", () => {
   let promotionInformationCokie = getCookie("userPromotionInfo");
-  console.log(promotionInformationCokie);
   if (promotionInformationCokie) {
     try {
       let decodedValue = decodeURIComponent(promotionInformationCokie);
 
       let promotionInfo = JSON.parse(decodedValue);
 
-      console.log("SECOND email: " + promotionInfo.email);
       email = promotionInfo.email;
-      console.log("SECOND promotion id: " + promotionInfo.promotionId);
+
       id = promotionInfo.promotionId;
     } catch (e) {
       console.error("Error parsing JSON from cookie:", e);
@@ -23,16 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   let userInformationCokie = getCookie("userInfo");
-  console.log(userInformationCokie);
+
   if (userInformationCokie) {
     try {
       let decodedValue = decodeURIComponent(userInformationCokie);
 
       let userInfo = JSON.parse(decodedValue);
 
-      console.log("FIRST email: " + userInfo.email);
       email = userInfo.email;
-      console.log("FIRST promotion id: " + userInfo.Authorization);
+
       authorization = userInfo.Authorization;
     } catch (e) {
       console.error("Error parsing JSON from cookie:", e);
@@ -63,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       document.getElementById("h1").textContent = data.promotionName;
       document.getElementById("currentImage").src = data.imageUrl;
     })
@@ -84,8 +80,6 @@ document
       promotionId: id,
     };
 
-    console.log(couponData);
-
     if (validateForm()) {
       fetch(`http://localhost:8080/coupon`, {
         method: "POST",
@@ -99,7 +93,6 @@ document
           return response.json();
         })
         .then((data) => {
-          console.log(data);
           alert(data.message);
         })
         .catch((error) => console.error("Error saving coupon: " + error));

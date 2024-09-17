@@ -22,7 +22,6 @@ document
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         document.getElementById("responseFromBack").textContent = data.message;
       })
       .catch((error) => {
