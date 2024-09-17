@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       email = userInfo.email;
       authorization = userInfo.Authorization;
+      console.log(authorization);
     } catch (e) {
       console.error("Error parsing JSON from cookie:", e);
     }
@@ -220,9 +221,9 @@ function deleteAccount() {
         return response.json();
       })
       .then((data) => {
-        alert("Account deleted succesfully");
-        window.location.href =
-          "http://127.0.0.1:5500/src/main/resources/templates/login.html";
+        deleteAllCookies();
+        alert(data.message);
+        window.location.href = "/";
       })
       .catch((error) => console.error("Error deleting account: " + error));
   }

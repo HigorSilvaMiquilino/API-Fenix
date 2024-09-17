@@ -5,6 +5,7 @@ import br.com.systems.fenix.API_Fenix.Model.PasswordResetToken;
 import br.com.systems.fenix.API_Fenix.Model.ValidationToken;
 import br.com.systems.fenix.API_Fenix.Model.enuns.ProfileEnum;
 import br.com.systems.fenix.API_Fenix.Repository.ClientRepository;
+import br.com.systems.fenix.API_Fenix.Repository.CouponRepository;
 import br.com.systems.fenix.API_Fenix.Repository.PasswordResetTokenRepository;
 import br.com.systems.fenix.API_Fenix.Repository.ValidationTokenRepository;
 import br.com.systems.fenix.API_Fenix.Service.impl.EmailServiceImpl;
@@ -46,6 +47,9 @@ public class ClientService {
 
     @Autowired
     private EmailServiceImpl emailServiceImpl;
+
+    @Autowired
+    private CouponRepository couponRepository;
 
     @Autowired
     private ValidationTokenRepository validationTokenRepository;
@@ -211,10 +215,16 @@ public class ClientService {
     }
 
     @Transactional
-    public void delete(Long id) {
-        findById(id);
+    public String delete(Long id) {
+        Client byId = findById(id);
+        ;
+
         try {
+            couponRepository.deleteByClientID(id);
+            passwordResetTokenRepository.deleteByClientId(id);
+            validationTokenRepository.deleteByClientId(id);
             clientRepository.deleteById(id);
+            return byId.getFirstName();
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete client: " + e.getMessage());
         }

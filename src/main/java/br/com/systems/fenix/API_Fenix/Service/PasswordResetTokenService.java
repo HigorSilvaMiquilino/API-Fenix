@@ -38,4 +38,8 @@ public class PasswordResetTokenService {
         return passToke.getExpiryDate().before(cal.getTime());
     }
 
+    public void deleteTokenByClientId(Long clientId) {
+        passwordResetTokenRepository.deleteByClientId(clientId);
+    }
+
 }

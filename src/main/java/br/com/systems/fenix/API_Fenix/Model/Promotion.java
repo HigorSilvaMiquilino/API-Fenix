@@ -34,7 +34,7 @@ public class Promotion {
     @Column(name = "imageUrl")
     private String imageUrl;
 
-    @OneToMany(mappedBy = "promotion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "promotion", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Product> products;
 
 }

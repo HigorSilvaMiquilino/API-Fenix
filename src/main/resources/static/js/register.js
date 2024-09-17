@@ -29,6 +29,8 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
       .then(({ data, token }) => {
         alert(data.message);
 
+        localStorage.setItem("userFirstName", formData.get("firstName"));
+
         const userInfo = {
           email: data.client.email,
           Authorization: token,

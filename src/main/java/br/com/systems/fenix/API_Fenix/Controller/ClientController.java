@@ -147,13 +147,14 @@ public class ClientController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseClient> delete(@PathVariable Long id) {
-        this.clientService.delete(id);
+        String deleted = this.clientService.delete(id);
+        ;
 
         ResponseClient response = ResponseClient.builder()
                 .timeStamp(LocalDateTime.now().toString())
                 .statusCode(HttpStatus.OK.value())
                 .status(HttpStatus.OK)
-                .message("Client deleted successfully")
+                .message("Account deleted succesfully, i hope to see you soon, " + deleted)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

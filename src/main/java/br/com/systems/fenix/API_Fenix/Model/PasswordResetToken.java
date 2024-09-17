@@ -3,6 +3,7 @@ package br.com.systems.fenix.API_Fenix.Model;
 import java.util.Calendar;
 import java.util.Date;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class PasswordResetToken {
 
     private String token;
 
-    @OneToOne(targetEntity = Client.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = Client.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false, name = "client_id")
     private Client client;
 

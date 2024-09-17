@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class ValidationToken {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToOne(targetEntity = Client.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = Client.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false, name = "client_id")
     private Client Client;
 
