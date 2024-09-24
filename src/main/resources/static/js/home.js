@@ -3,6 +3,7 @@ let email;
 let authorization;
 let promotionIdByCoupon;
 let promotionTakenId = [];
+let nameClient;
 
 document.addEventListener("DOMContentLoaded", () => {
   let userInfoCookie = getCookie("userInfo");
@@ -33,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         const container = document.getElementById("cardProfile");
         idClient = data.id;
+        nameClient = data.firstName;
 
         container.innerHTML = "";
 
@@ -200,7 +202,40 @@ function updateProfile() {
 }
 
 function deleteAccount() {
-  if (confirm("Are you sure you want to delete this account?")) {
+  const deletePopup = document.createElement("div");
+  deletePopup.id = "deltePopup";
+  deletePopup.className = "dpopup";
+
+  const deltePopupContent = document.createElement("div");
+  deltePopupContent.className = "delete-popup-content";
+
+  const deleteHeader = document.createElement("h2");
+  deleteHeader.textContent = `Are you sure you want to delte this account, ${nameClient}?`;
+
+  const deletePopupButtons = document.createElement("div");
+  deletePopupButtons.className = "delte-popup-buttons";
+
+  const confirmDeletetBtn = document.createElement("button");
+  confirmDeletetBtn.id = "delte-confirmLogoutBtn";
+  confirmDeletetBtn.className = "delte btn confirm";
+  confirmDeletetBtn.textContent = "OK";
+
+  const cancelDeletetBtn = document.createElement("button");
+  cancelDeletetBtn.id = "cancelDeleteBtn";
+  cancelDeletetBtn.className = "delte btn cancel";
+  cancelDeletetBtn.textContent = "No";
+
+  deletePopupButtons.appendChild(confirmDeletetBtn);
+  deletePopupButtons.appendChild(cancelDeletetBtn);
+
+  deltePopupContent.appendChild(deleteHeader);
+  deltePopupContent.appendChild(deletePopupButtons);
+
+  deletePopup.appendChild(deltePopupContent);
+
+  document.body.appendChild(deletePopup);
+
+  confirmDeletetBtn.addEventListener("click", function () {
     fetch(`http://localhost:8080/client/${idClient}`, {
       method: "DELETE",
       headers: new Headers({
@@ -215,12 +250,19 @@ function deleteAccount() {
         return response.json();
       })
       .then((data) => {
+        console.log(data.message);
         deleteAllCookies();
-        alert(data.message);
+        deletePopup.style.display = "none";
         window.location.href = "/";
       })
       .catch((error) => console.error("Error deleting account: " + error));
-  }
+  });
+
+  cancelDeletetBtn.addEventListener("click", function () {
+    deletePopup.style.display = "none";
+  });
+
+  deletePopup.style.display = "block";
 }
 
 function logoutAccount() {

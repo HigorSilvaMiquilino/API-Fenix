@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.systems.fenix.API_Fenix.DTO.CouponDTO;
+import br.com.systems.fenix.API_Fenix.Model.Client;
 import br.com.systems.fenix.API_Fenix.Model.Coupon;
+import br.com.systems.fenix.API_Fenix.Model.Promotion;
 import br.com.systems.fenix.API_Fenix.Repository.CouponRepository;
 import br.com.systems.fenix.API_Fenix.exception.CouponCNPJNotFoundException;
 import br.com.systems.fenix.API_Fenix.exception.CouponClientNotFoundException;
@@ -22,6 +24,15 @@ public class CouponService {
 
     @Autowired
     private CouponRepository couponRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private PromotionService promotionService;
+
+    @Autowired
+    private ClientService clientService;
 
     public Coupon findById(Long id) {
         Optional<Coupon> cOptional = this.couponRepository.findById(id);
@@ -67,7 +78,9 @@ public class CouponService {
 
     @Transactional
     public Coupon save(CouponDTO coupon) {
-        System.out.println("I want to see if the cnpj get here" + coupon.getCNPJ());
+        Client client = clientService.findById(coupon.getClientId());
+        Promotion promotion = promotionService.findById(coupon.getPromotionId());
+
         Coupon couponBuilt = Coupon.builder()
                 .CNPJ(coupon.getCNPJ())
                 .couponNumber(coupon.getCouponNumber())
@@ -75,8 +88,11 @@ public class CouponService {
                 .clientID(coupon.getClientId())
                 .promotionId(coupon.getPromotionId())
                 .build();
-        System.out.println(couponBuilt);
+
         this.couponRepository.save(couponBuilt);
+
+        emailService.sendSimpleCoupomMessage(client.getFirstName(), client.getEmail(), coupon.getCouponNumber(),
+                promotion.getPromotionName());
         return couponBuilt;
     }
 

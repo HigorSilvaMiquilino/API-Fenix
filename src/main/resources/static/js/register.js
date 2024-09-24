@@ -27,8 +27,7 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
         return response.json().then((data) => ({ data, token }));
       })
       .then(({ data, token }) => {
-        alert(data.message);
-
+        createPopup(data.message);
         localStorage.setItem("userFirstName", formData.get("firstName"));
 
         const userInfo = {
@@ -39,7 +38,6 @@ document.getElementById("apiForm").addEventListener("submit", function (event) {
         const jsonValue = encodeURIComponent(JSON.stringify(userInfo));
 
         setCookie("userInfo", jsonValue, 7);
-        window.location.href = "/greeting";
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -216,4 +214,42 @@ function setCookie(name, value, hours) {
     expires = "; expires=" + date.toUTCString();
   }
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function createPopup(message) {
+  // Remove the popup if it already exists
+  const existingPopup = document.getElementById("responsePopup");
+  if (existingPopup) {
+    existingPopup.remove();
+  }
+
+  // Create the popup elements
+  const popup = document.createElement("div");
+  popup.id = "responsePopup";
+  popup.className = "popup";
+
+  const popupContent = document.createElement("div");
+  popupContent.className = "popup-content";
+
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "OK";
+  closeButton.className = "btn close";
+  closeButton.onclick = () => {
+    popup.style.display = "none"; // Hide the popup when close is clicked
+    window.location.href = "/greeting";
+  };
+
+  // Append elements to the popup
+  popupContent.appendChild(messageElement);
+  popupContent.appendChild(closeButton);
+  popup.appendChild(popupContent);
+
+  // Append the popup to the body
+  document.body.appendChild(popup);
+
+  // Show the popup
+  popup.style.display = "block";
 }

@@ -116,7 +116,11 @@ public class ClientService {
             ValidationToken validationToken = new ValidationToken(clientBuilt);
             validationTokenRepository.save(validationToken);
 
-            emailServiceImpl.sendHtmlEmail(client.getFirstName(), client.getEmail(), validationToken.getToken());
+            // emailServiceImpl.sendHtmlEmail(client.getFirstName(), client.getEmail(),
+            // validationToken.getToken());
+
+            emailServiceImpl.sendHtmlEmailWithEmbeddedFiles(client.getFirstName(), client.getEmail(),
+                    validationToken.getToken());
             return clientBuilt;
         }
     }

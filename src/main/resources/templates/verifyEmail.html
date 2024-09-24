@@ -1,18 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>Verify Email eu que fiz</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verification Success</title>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+      }
+      .card {
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .btn-primary {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
-    <p th:text="'Timestamp: ' + ${timeStamp}"></p>
-    <p th:text="'Success: ' + ${Success}"></p>
-    <p th:text="'Message: ' + ${message}"></p>
+    <div class="card">
+      <h1 class="card-title">Account Verified Successfully!</h1>
+      <p class="card-text" th:text="'Timestamp: ' + ${timeStamp}"></p>
+      <p class="card-text" th:text="'Success: ' + ${Success}"></p>
+      <p class="card-text" th:text="'Message: ' + ${message}"></p>
 
-    <label for="login">You can enter now</label>
-    <a th:href="@{/home}" style="text-decoration: none">Home</a>
+      <a th:href="@{/home}" class="btn btn-primary">Go to Home</a>
+    </div>
   </body>
 </html>

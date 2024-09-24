@@ -82,7 +82,7 @@ document
           return response.json();
         })
         .then((data) => {
-          alert(data.message);
+          createPopup(data.message);
           const userInfo = {
             email: data.client.email,
             firstName: data.client.firstName,
@@ -92,8 +92,6 @@ document
 
           const jsonValue = encodeURIComponent(JSON.stringify(userInfo));
           setCookie("userInfo", jsonValue, 7);
-
-          window.location.href = "/home";
         })
         .catch((error) => console.error("Error updating client: " + error));
     }
@@ -268,4 +266,42 @@ function setCookie(name, value, hours) {
     expires = "; expires=" + date.toUTCString();
   }
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function createPopup(message) {
+  // Remove the popup if it already exists
+  const existingPopup = document.getElementById("responsePopup");
+  if (existingPopup) {
+    existingPopup.remove();
+  }
+
+  // Create the popup elements
+  const popup = document.createElement("div");
+  popup.id = "responsePopup";
+  popup.className = "popup";
+
+  const popupContent = document.createElement("div");
+  popupContent.className = "popup-content";
+
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "OK";
+  closeButton.className = "btn close";
+  closeButton.onclick = () => {
+    popup.style.display = "none"; // Hide the popup when close is clicked
+    window.location.href = "/home";
+  };
+
+  // Append elements to the popup
+  popupContent.appendChild(messageElement);
+  popupContent.appendChild(closeButton);
+  popup.appendChild(popupContent);
+
+  // Append the popup to the body
+  document.body.appendChild(popup);
+
+  // Show the popup
+  popup.style.display = "block";
 }

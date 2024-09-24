@@ -125,3 +125,45 @@ a:hover {
   background-color: #dc3545;
   color: white;
 }
+
+.dpopup {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.delete-popup-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.dpopup h2 {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.delte-popup-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.delte.btn.confirm {
+  background-color: #28a745;
+  color: white;
+}
+
+.delte.btn.cancel {
+  background-color: #dc3545;
+  color: white;
+}

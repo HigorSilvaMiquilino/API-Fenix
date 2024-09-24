@@ -3,6 +3,8 @@ package br.com.systems.fenix.API_Fenix.Service;
 public interface EmailService {
     void sendSimpleMailMessage(String name, String to, String token);
 
+    void sendSimpleCoupomMessage(String name, String to, String text, String promotionName);
+
     void sendSimpleMailMessageResetPassword(String name, String to, String token, String subject);
 
     void sendMineMessageWithAttachments(String name, String to, String token);

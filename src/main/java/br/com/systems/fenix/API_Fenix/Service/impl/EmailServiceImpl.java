@@ -3,6 +3,7 @@ package br.com.systems.fenix.API_Fenix.Service.impl;
 import java.io.File;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -30,6 +31,8 @@ public class EmailServiceImpl implements EmailService {
     private static final String UTF_8_ENCO = "UTF-8";
 
     private static final String NEW_USER_ACCOUNT_VERIFICATION = "Registration Confirmation!";
+
+    private static final String NEW_USER_COUPON = "Coupon Registed!";
 
     private static final String EMAIL_TEMPLATE = "emailTemplate";
 
@@ -62,6 +65,22 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Async
+    public void sendSimpleCoupomMessage(String name, String to, String text, String promotionNameString) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setSubject(NEW_USER_COUPON);
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setText(EmailUtils.getEmailMessageCoupom(name, HOST, text, promotionNameString));
+            eMailSender.send(message);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    @Async
     public void sendSimpleMailMessageResetPassword(String name, String to, String token, String subject) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -69,6 +88,7 @@ public class EmailServiceImpl implements EmailService {
             message.setFrom(fromEmail);
             message.setTo(to);
             message.setText(EmailUtils.getEmailMessageResetPassword(name, HOST, token));
+
             eMailSender.send(message);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -88,10 +108,14 @@ public class EmailServiceImpl implements EmailService {
             helper.setTo(to);
             helper.setText(EmailUtils.getEmailMessage(name, HOST, token));
 
-            FileSystemResource fenix = new FileSystemResource(
-                    new File(System.getProperty("user.home") + "/Pictures/Saved Pictures/fenix_systems_logo.jpg"));
+            // FileSystemResource fenix = new FileSystemResource(
+            // new File(System.getProperty("user.home") + "/Pictures/Saved
+            // Pictures/fenix_systems_logo.jpg"));
 
-            helper.addAttachment(fenix.getFilename(), fenix);
+            // helper.addAttachment(fenix.getFilename(), fenix);
+
+            helper.addInline("image",
+                    new ClassPathResource("C:\\Users\\Fenix Systems\\Pictures\\Saved Pictures>fenix_systems_logo.jpg"));
             eMailSender.send(message);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -168,10 +192,10 @@ public class EmailServiceImpl implements EmailService {
             mimeMultipart.addBodyPart(messageBodyPart);
 
             BodyPart imageBodyPart = new MimeBodyPart();
-            DataSource dataSource = new FileDataSource(
-                    System.getProperty("user.home") + "/Pictures/Saved Pictures/fenix_systems_logo.jpg");
+            String imagePath = System.getProperty("user.home") + "/Pictures/Saved Pictures/fenix_systems_logo.jpg";
+            DataSource dataSource = new FileDataSource(imagePath);
             imageBodyPart.setDataHandler(new DataHandler(dataSource));
-            imageBodyPart.setHeader("Content-ID", "image");
+            imageBodyPart.setHeader("Content-ID ", "<image>");
             mimeMultipart.addBodyPart(imageBodyPart);
 
             message.setContent(mimeMultipart);
@@ -179,7 +203,7 @@ public class EmailServiceImpl implements EmailService {
             eMailSender.send(message);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Error sending email: " + e.getMessage());
         }
     }
 

@@ -20,7 +20,12 @@ document
       .then((response) => {
         if (!response.ok) {
           return response.json().then((err) => {
-            throw new Error(err.message);
+            document.getElementById("password").style.borderColor = "red";
+            document.getElementById("email").style.borderColor = "red";
+            responseFromBack.style.color = "red";
+            responseFromBack.textContent = err.message;
+
+            return Promise.reject();
           });
         }
         let token = response.headers.get("Authorization");
@@ -83,3 +88,21 @@ function setCookie(name, value, hours) {
   }
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
+
+const responseFromBack = document.getElementById("responseFromBack");
+
+document
+  .getElementById("responseFromBack")
+  .addEventListener("input", function (event) {
+    event.target.style.borderColor = "";
+  });
+
+document.getElementById("password").addEventListener("input", function (event) {
+  event.target.style.borderColor = "";
+  responseFromBack.textContent = "";
+});
+
+document.getElementById("email").addEventListener("input", function (event) {
+  event.target.style.borderColor = "";
+  responseFromBack.textContent = "";
+});

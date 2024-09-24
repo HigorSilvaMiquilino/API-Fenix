@@ -93,7 +93,7 @@ document
           return response.json();
         })
         .then((data) => {
-          alert(data.message);
+          createPopup(data.message);
         })
         .catch((error) => console.error("Error saving coupon: " + error));
     }
@@ -210,4 +210,41 @@ function deleteAllCookies() {
     const name = cookie > -1 ? cookie.substr(0, eqPos) : cookie;
     document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
   });
+}
+
+function createPopup(message) {
+  // Remove the popup if it already exists
+  const existingPopup = document.getElementById("responsePopup");
+  if (existingPopup) {
+    existingPopup.remove();
+  }
+
+  // Create the popup elements
+  const popup = document.createElement("div");
+  popup.id = "responsePopup";
+  popup.className = "popup";
+
+  const popupContent = document.createElement("div");
+  popupContent.className = "popup-content";
+
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "OK";
+  closeButton.className = "btn close";
+  closeButton.onclick = () => {
+    popup.style.display = "none"; // Hide the popup when close is clicked
+  };
+
+  // Append elements to the popup
+  popupContent.appendChild(messageElement);
+  popupContent.appendChild(closeButton);
+  popup.appendChild(popupContent);
+
+  // Append the popup to the body
+  document.body.appendChild(popup);
+
+  // Show the popup
+  popup.style.display = "block";
 }

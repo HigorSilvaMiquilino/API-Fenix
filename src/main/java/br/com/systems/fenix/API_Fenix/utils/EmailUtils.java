@@ -25,4 +25,16 @@ public class EmailUtils {
         return "<a href=" + host + "reset/client/changePassword?token=" + token + ">" + "Reset" + "</a>";
 
     }
+
+    public static String getEmailMessageCoupom(String name, String host, String text, String promotionName) {
+        return "<html>"
+                + "<body>"
+                + "<p>Hello " + name + ",</p>"
+                + "<p>You have successfully registered the coupon <b>" + text + "</b>.</p>"
+                + "<p>We wish you all the luck in the world!</p>"
+                + "<p>" + promotionName + "</p>"
+                + "</body>"
+                + "</html>";
+    }
+
 }
